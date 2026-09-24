@@ -34,9 +34,9 @@ Decided 2026-09-24: MIT licence (done), the author email stays in the history, t
 - [ ] **C5 Quiet the diagnostics** (Claude): gate `DiagnosticPatches`' beacon ApplyDamage/Destroy/Remove warnings
       (full stack traces for every player) behind DevMode.
 - [x] **C6 Changelog**: `BuildBeacon/CHANGELOG.md` has the 0.1.0 entry; the release zip takes it from there.
-- [ ] **C7 Dependency versions** (Claude, at publish time): current `BepInExPack_Valheim` and `Jotunn` on
-      Thunderstore; bump `JotunnLib` in the csproj and the manifest together, rebuild, retest. `check --online` says
-      when a newer one is out (BepInExPack 5.4.2351 is, against the manifest's 5.4.2333, on 2026-09-24).
+- [x] **C7 Dependency versions** (2026-09-24): `BepInExPack_Valheim-5.4.2351` and `Jotunn-2.30.2`, both the latest;
+      the build compiles against the Dev profile's BepInEx (`BEPINEX_PATH`). Recheck at publish time: `check --online`
+      says when a newer one is out. Retest in game with the Dev profile updated (it had Jötunn 2.30.1).
 - [ ] **C8 Player README** (Claude): screenshots (absolute URLs), multiplayer note (server and every client need the
       mod), known limitations (wall pieces snap by their centre only), link to the site's matrix.
 - [ ] **C9 Version** (you decide, Claude applies): 0.1.0 or 1.0.0; `release.py bump 1.0.0` sets `PluginVersion`,

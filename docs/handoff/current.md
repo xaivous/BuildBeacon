@@ -261,6 +261,11 @@ next handoff (the `handoff` skill), fold this into a new dated file and reset it
   now defaults to false (an existing config file keeps its saved value; the Dev profile's is true), and the manifest's
   `website_url` is `https://xaivous.github.io/BuildBeacon/`: `check --release --online` passes, with one warning
   (BepInExPack 5.4.2351 is out; the manifest has 5.4.2333).
+- Dependencies (the user): the manifest depends on `denikson-BepInExPack_Valheim-5.4.2351` (was 5.4.2333); Jötunn
+  stays 2.30.2 (latest on NuGet and Thunderstore). This machine's `Environment.props` (gitignored) sets `BEPINEX_PATH`
+  to the Dev profile's `BepInEx`, so r2modman updates reach the build (the Dev profile had Jötunn 2.30.1: update it
+  in r2modman). `docs/releasing.md` has an "Updating BepInEx and Jötunn" table. `check --release --online`: no
+  warnings.
 - Plugin icon (the user's art): the 1254×1254 original kept as `art/icon.webp` (the repository's art masters),
   scaled with Lanczos to the 256×256 `BuildBeacon/Package/icon.png` Thunderstore needs (replacing the stub).
   PREPUBLISH C1 ticked; open item 4 (Thunderstore icon) done, DevMode is now item 4.

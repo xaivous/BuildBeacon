@@ -174,6 +174,24 @@ def sources():
     }
 
 
+def stale_zip_entries(version):
+    """The files in an existing dist/BuildBeacon-<version>.zip that differ from their sources; empty when there is no
+    zip or it is current. The DLL is skipped: only a build can say whether it changed."""
+    path = os.path.join(DIST, f"BuildBeacon-{version}.zip")
+    if not os.path.isfile(path):
+        return []
+    stale = []
+    with zipfile.ZipFile(path) as z:
+        names = set(z.namelist())
+        for arc, src in ZIP_LAYOUT:
+            if arc.endswith(".dll") or not os.path.isfile(src):
+                continue
+            with open(src, "rb") as f:
+                if arc not in names or z.read(arc) != f.read():
+                    stale.append(arc)
+    return stale
+
+
 def changelog_entry(changelog, version):
     """The text under '## <version>' up to the next '## ' heading."""
     m = re.search(rf"^## {re.escape(version)}\s*$(.*?)(?=^## |\Z)", changelog, re.M | re.S)
@@ -261,6 +279,12 @@ def check(report, tag=None, release=False, online=False, publishing=False):
         report.error(f"thunderstore.toml package.name differs from the manifest name '{name}'")
     if "valheim" not in toml.get("publish", {}).get("communities", []):
         report.error("thunderstore.toml publish.communities does not include 'valheim'")
+
+    # A zip left in dist/ by an earlier `package` that no longer matches the sources (the DLL needs a build to compare).
+    stale = stale_zip_entries(version)
+    if stale:
+        report.warn(f"dist/BuildBeacon-{version}.zip is out of date ({', '.join(stale)} changed since it was built): "
+                    f"run `package` again before testing or uploading it by hand")
 
     # Release-only: the pre-publish guards.
     if s["devmode"] != "false":

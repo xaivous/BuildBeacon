@@ -76,6 +76,18 @@ git push origin v0.2.0
 cannot be deleted, only deprecated; there is no flag to skip it), uploads with `tcli publish`, and tags the commit.
 Pushing the tag runs the release tag checks in CI.
 
+## Updating BepInEx and Jötunn
+
+Neither is read from downloaded files, and neither ships in the zip (Thunderstore installs them from the manifest's
+dependencies). Update them in these places:
+
+| What | Build | Package | Testing |
+|---|---|---|---|
+| Jötunn | The `JotunnLib` NuGet version in `BuildBeacon/BuildBeacon.csproj` | `ValheimModding-Jotunn-x.y.z` in the manifest (must equal the csproj version) | r2modman, Dev profile |
+| BepInEx | `BEPINEX_PATH` in `BuildBeacon/Environment.props` (per machine; here the Dev profile's `BepInEx`, else `$(VALHEIM_INSTALL)\BepInEx`) | `denikson-BepInExPack_Valheim-x.y.z` in the manifest | r2modman, Dev profile |
+
+`check --online` says when a newer version of either is on Thunderstore.
+
 ## What each command checks
 
 `check` (also on every push and pull request in CI):
@@ -84,7 +96,9 @@ Pushing the tag runs the release tag checks in CI.
   description 1 to 250 characters, `website_url` present, dependencies `Team-Package-x.y.z`, including BepInExPack and
   Jötunn at the JotunnLib version the csproj builds against;
 - `icon.png` is a 256×256 PNG; `README.md` and `CHANGELOG.md` are UTF-8 and not empty;
-- `thunderstore.toml` names a valid team, the same package name, and the `valheim` community.
+- `thunderstore.toml` names a valid team, the same package name, and the `valheim` community;
+- a zip left in `dist/` by an earlier `package` still matches the sources (a warning names the files that changed;
+  `publish` and `upload` always build a fresh one).
 
 `check --release` (and `publish`, `upload`) also refuses: `DevMode` defaulting to true, an empty `website_url`, a changelog entry
 still holding the placeholder. `--tag v1.2.3` checks a tag against the version.
