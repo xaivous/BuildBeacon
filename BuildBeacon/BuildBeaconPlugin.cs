@@ -16,9 +16,12 @@ namespace BuildBeacon
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Minor)]
     public class BuildBeaconPlugin : BaseUnityPlugin
     {
-        public const string PluginGuid = "com.xaivous.buildbeacon";
+        public const string PluginGuid = "xaivous.buildbeacon";
+        /// <summary>The GUID up to 0.1.x. BepInEx names the config file after the GUID, so its settings are carried
+        /// over once (MigrateConfigFile).</summary>
+        private const string OldPluginGuid = "com.xaivous.buildbeacon";
         public const string PluginName = "BuildBeacon";
-        public const string PluginVersion = "0.1.0";
+        public const string PluginVersion = "0.2.0";
         public const string PiecePrefab = "xai_build_beacon";
         public const string BundleName = "buildbeacon";              // embedded resource, built from BuildBeaconUnity/Assets/Beacon
         public const string AssetPrefab = "xai_build_beacon_prefab";  // the asset in the bundle; cloned to PiecePrefab at registration
@@ -86,9 +89,32 @@ namespace BuildBeacon
         internal static BeaconConfig Cfg;
         private Harmony _harmony;
 
+        /// <summary>
+        /// 0.2.0 dropped "com." from the GUID, and BepInEx names the config file after the GUID. When the new file does
+        /// not exist yet but the old one does, copy the old one to the new name and reload it, so players and servers
+        /// keep their settings. The old file stays as a backup; nothing is done once the new file exists.
+        /// </summary>
+        private void MigrateConfigFile()
+        {
+            var newPath = Config.ConfigFilePath;
+            var oldPath = System.IO.Path.Combine(BepInEx.Paths.ConfigPath, OldPluginGuid + ".cfg");
+            if (System.IO.File.Exists(newPath) || !System.IO.File.Exists(oldPath)) return;
+            try
+            {
+                System.IO.File.Copy(oldPath, newPath);
+                Config.Reload();
+                Log.LogInfo($"Settings carried over from {OldPluginGuid}.cfg to {PluginGuid}.cfg (the old file is kept as a backup)");
+            }
+            catch (System.Exception e)
+            {
+                Log.LogWarning($"Could not carry over {OldPluginGuid}.cfg ({e.Message}); starting with default settings");
+            }
+        }
+
         private void Awake()
         {
             Log = Logger;
+            MigrateConfigFile(); // before anything reads or binds a setting
             Cfg = new BeaconConfig(Config);
             Cfg.SettingChanged += DiscountRules.Rebuild;
             Cfg.SettingChanged += ApplyHolderRange;

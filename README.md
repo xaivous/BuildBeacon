@@ -183,7 +183,8 @@ that count, and changes reach every player without a restart.
 
 ## Configuration
 
-The config file is `BepInEx/config/com.xaivous.buildbeacon.cfg`.
+The config file is `BepInEx/config/xaivous.buildbeacon.cfg` (before 0.2.0, `com.xaivous.buildbeacon.cfg`; its settings
+carry over automatically).
 
 | Section | Setting | Default | Meaning |
 |---|---|---|---|

@@ -261,6 +261,11 @@ next handoff (the `handoff` skill), fold this into a new dated file and reset it
   now defaults to false (an existing config file keeps its saved value; the Dev profile's is true), and the manifest's
   `website_url` is `https://xaivous.github.io/BuildBeacon/`: `check --release --online` passes, with one warning
   (BepInExPack 5.4.2351 is out; the manifest has 5.4.2333).
+- 0.2.0 (the user): the plugin GUID drops `com.`: `xaivous.buildbeacon`. It names only BepInEx's config file (saved
+  data uses `xai_` keys, the rules files fixed names, Jotunn's version check already needs matching major.minor), so
+  `BuildBeaconPlugin.MigrateConfigFile` copies `com.xaivous.buildbeacon.cfg` to the new name and reloads it when the
+  new file does not exist yet (the old one stays as a backup); log line `Settings carried over from ...`. README, the
+  site hint and CHANGELOG say so. 0.1.0 is tagged `v0.1.0` (on `896d5c1`, what was uploaded).
 - Dependencies (the user): the manifest depends on `denikson-BepInExPack_Valheim-5.4.2351` (was 5.4.2333); Jötunn
   stays 2.30.2 (latest on NuGet and Thunderstore). This machine's `Environment.props` (gitignored) sets `BEPINEX_PATH`
   to the Dev profile's `BepInEx`, so r2modman updates reach the build (the Dev profile had Jötunn 2.30.1: update it

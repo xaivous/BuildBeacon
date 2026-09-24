@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0
+
+- **The config file is now `BepInEx/config/xaivous.buildbeacon.cfg`** (was `com.xaivous.buildbeacon.cfg`): the mod's ID
+  dropped its `com.` prefix. Your settings carry over automatically the first time 0.2.0 starts; the old file is kept
+  as a backup and can be deleted afterwards. Nothing in your worlds or characters changes.
+- Server and players must all update together, as for any new minor version.
+
 ## 0.1.0
 
 Initial release.

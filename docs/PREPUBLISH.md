@@ -16,7 +16,8 @@ Decided 2026-09-24: MIT licence (done), the author email stays in the history, t
       `https://xaivous.github.io/BuildBeacon/` (use it for the manifest's `website_url`, C3).
 - [x] **A4 Rename the GitHub repo**: now `xaivous/BuildBeacon` (the local clone's `origin` points there; the folder is
       `Xaivous_BuildBeacon`). The `vs_` prefix became `xai_` in code and assets, the plugin GUID
-      `com.xaivous.buildbeacon` (2026-09-24, branch `rename`).
+      `com.xaivous.buildbeacon` (2026-09-24, branch `rename`); from 0.2.0 `xaivous.buildbeacon`, with the old config
+      file carried over.
 - [ ] **A5 Public README** (Claude): the root `README.md` is now the player README (moved from `BuildBeacon/`, and
       still the Thunderstore page); the developer guide is `docs/development.md`. Still to add for visitors: links to
       Thunderstore and the site, a pointer to `docs/development.md` for building, licence, credits (Jötunn template,
