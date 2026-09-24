@@ -5,6 +5,11 @@
 - **The config file is now `BepInEx/config/xaivous.buildbeacon.cfg`** (was `com.xaivous.buildbeacon.cfg`): the mod's ID
   dropped its `com.` prefix. Your settings carry over automatically the first time 0.2.0 starts; the old file is kept
   as a backup and can be deleted afterwards. Nothing in your worlds or characters changes.
+- **A quieter log.** How the pieces are set up, and the diagnostic lines, now appear only with the new `VerboseLogging`
+  setting (Dev section, off by default); the log shows one line listing the pieces instead.
+- On joining a server, the log says "Using the server's settings", with the values in force.
+- No more false "Rule trophy ... does not match any item" warnings at the main menu alongside some other mods; real
+  typos in the rules files are still reported, once.
 - Server and players must all update together, as for any new minor version.
 
 ## 0.1.0

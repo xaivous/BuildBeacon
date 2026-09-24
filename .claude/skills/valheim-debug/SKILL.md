@@ -100,5 +100,6 @@ When the Unity MCP tools are connected, `Unity_GetConsoleLogs` reads the editor 
 without it (`UpdateWear`: `if (m_noSupportWear) { UpdateSupport(); if (!HaveSupport()) damage = 100; }`). The ward
 has it `false` and never collapses; stone walls have it `true`. A Stone-material piece with it `true` dies when
 placed on wood. For a utility piece like the beacon, set `m_noSupportWear = false` and `m_supports = false`.
-Diagnosed with the `DiagnosticPatches` log lines (`[diag] beacon ApplyDamage 1000 ... no HitData`) and
+Diagnosed with the `DiagnosticPatches` log lines (`[diag] beacon ApplyDamage 1000 ... no HitData`, with the
+`VerboseLogging` setting on) and
 `tools/sigdump ... WearNTear '^UpdateWear$' --il`, which prints a method's IL with resolved names and branch targets.

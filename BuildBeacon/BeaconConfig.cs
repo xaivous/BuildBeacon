@@ -22,6 +22,7 @@ namespace BuildBeacon
         public ConfigEntry<bool> ShrinkGreatBeaconTrophies;
         public ConfigEntry<TrophyPlacement> Placement;
         public ConfigEntry<bool> DevMode;
+        public ConfigEntry<bool> VerboseLogging;
 
         // No upgrade materials. Level = 1 + the boss holders and trophy racks linked to the beacon, up to MaxLevel;
         // radius grows with the level. The beacon's own creature slots are fixed; racks add theirs to the network.
@@ -284,6 +285,10 @@ namespace BuildBeacon
             DevMode = ConfigUtil.Local(cfg, D, "DevMode", false,
                 "For mod development. When on, spawning into a world this machine hosts turns on devcommands, god mode " +
                 "and debug fly. Does nothing on dedicated servers or when joining someone else's world.");
+            VerboseLogging = ConfigUtil.Local(cfg, D, "VerboseLogging", false,
+                "For mod development. Logs the details of registering the pieces (materials, effects, snap points), how each " +
+                "trophy is fitted in its alcove, and the [diag] lines (placements, snapping, slow inventory changes). Off: " +
+                "only what players need.");
 
             cfg.SettingChanged += (_, __) => SettingChanged?.Invoke();
         }

@@ -86,6 +86,15 @@ namespace BuildBeacon
         private static readonly HashSet<string> UntintedMaterials = new HashSet<string> { "HolderIron" };
 
         internal static ManualLogSource Log;
+        /// <summary>The pieces registered, for the one-line summary players see (the details are verbose).</summary>
+        private static readonly List<GameObject> s_registered = new List<GameObject>();
+
+        /// <summary>A line for development only: logged when the VerboseLogging setting is on (piece registration
+        /// details, trophy display fitting, [diag] lines). Players see only what concerns them.</summary>
+        internal static void Verbose(string message)
+        {
+            if (Cfg != null && Cfg.VerboseLogging.Value) Log.LogInfo(message);
+        }
         internal static BeaconConfig Cfg;
         private Harmony _harmony;
 
@@ -111,6 +120,23 @@ namespace BuildBeacon
             }
         }
 
+        /// <summary>
+        /// Say in the client's log when the server's settings arrive (Jötunn syncs every admin-only entry, the rules
+        /// included, on joining and whenever an admin changes one), with the values that shape the discounts, so a
+        /// player can see which settings are in force. Jötunn puts this machine's own values back on leaving.
+        /// </summary>
+        private static void LogServerSettings(object sender, ConfigurationSynchronizationEventArgs args)
+        {
+            if (ZNet.instance == null || ZNet.instance.IsServer() || !args.UpdatedPluginGUIDs.Contains(PluginGuid)) return;
+            var inv = System.Globalization.CultureInfo.InvariantCulture;
+            Log.LogInfo((args.InitialSynchronization ? "Using the server's settings" : "The server changed its settings") +
+                        $": Enabled {Cfg.Enabled.Value}, BossPercent {Cfg.BossPercent.Value.ToString(inv)}, " +
+                        $"LevelPercents {Cfg.LevelPercents.Value}, Stacking {Cfg.Stacking.Value}, " +
+                        $"radius {Cfg.RadiusAtLevel1.Value.ToString(inv)} m + {Cfg.RadiusPerLevel.Value.ToString(inv)} m a level " +
+                        $"(Great Beacon {Cfg.GreatRadiusAtLevel1.Value.ToString(inv)} m + {Cfg.GreatRadiusPerLevel.Value.ToString(inv)} m), " +
+                        $"MaxLevel {Cfg.MaxLevel.Value}; rules: {DiscountRules.BossRules.Count} boss, {DiscountRules.MobRules.Count} creature");
+        }
+
         private void Awake()
         {
             Log = Logger;
@@ -118,10 +144,13 @@ namespace BuildBeacon
             Cfg = new BeaconConfig(Config);
             Cfg.SettingChanged += DiscountRules.Rebuild;
             Cfg.SettingChanged += ApplyHolderRange;
+            SynchronizationManager.OnConfigurationSynchronized += LogServerSettings;
             DiscountRules.Rebuild();
             RulesFile.InitAll(); // readable rules files override the config entries where this side has authority
 
             PrefabManager.OnVanillaPrefabsAvailable += RegisterPiece;
+            // Flag typos in the rules once the game's item database is complete (each game start; each rules set once).
+            ItemManager.OnItemsRegistered += DiscountRules.ValidateAgainstObjectDB;
             BeaconUI.Init(gameObject);
             DebugCommands.Register();
 
@@ -184,6 +213,7 @@ namespace BuildBeacon
             AddBeaconStation(piece.PiecePrefab, pieceCfg.Icon);
             EnsureSnapPointTags(piece.PiecePrefab);
             PieceManager.Instance.AddPiece(piece);
+            s_registered.Add(piece.PiecePrefab);
             // A failure here must not take the holders, racks and texts below with it.
             GameObject great = null;
             try { great = RegisterGreatBeacon(bundle); }
@@ -194,8 +224,17 @@ namespace BuildBeacon
             bundle?.Unload(false); // loaded objects stay alive; only the bundle's file handle is released
 
             AddLocalization();
-            DiscountRules.ValidateAgainstObjectDB(); // item database is populated by now; flag typos in the rules
+            Log.LogInfo($"Registered {s_registered.Count} building pieces: " + string.Join(", ", s_registered.Select(PieceName)) +
+                        (Cfg.VerboseLogging.Value ? "" : " (VerboseLogging shows the details)"));
             PrefabManager.OnVanillaPrefabsAvailable -= RegisterPiece;
+        }
+
+        /// <summary>A registered piece's English name ("Great Beacon"), or its prefab name.</summary>
+        private static string PieceName(GameObject prefab)
+        {
+            var piece = prefab != null ? prefab.GetComponent<Piece>() : null;
+            var name = piece != null && Localization.instance != null ? Localization.instance.Localize(piece.m_name) : null;
+            return string.IsNullOrEmpty(name) || name.StartsWith("[") ? (prefab != null ? prefab.name : "?") : name;
         }
 
         /// <summary>
@@ -237,7 +276,8 @@ namespace BuildBeacon
             AddBeaconStation(prefab, cfg.Icon, connectionHeight: 2.6f); // the threads meet the lower alcove row
             EnsureSnapPointTags(prefab);
             PieceManager.Instance.AddPiece(new CustomPiece(prefab, true, cfg));
-            Log.LogInfo($"Great Beacon {GreatPiecePrefab} registered from {GreatAssetPrefab}: {beacon.m_ownSlotCount} boss alcoves, " +
+            s_registered.Add(prefab);
+            Verbose($"Great Beacon {GreatPiecePrefab} registered from {GreatAssetPrefab}: {beacon.m_ownSlotCount} boss alcoves, " +
                         $"{prefab.GetComponentsInChildren<Transform>(true).Count(t => t.CompareTag("snappoint"))} snap points, " +
                         $"{prefab.GetComponentsInChildren<Transform>(true).Count(t => t.name.Contains("_shard_"))} crystal shards");
             return prefab;
@@ -253,7 +293,7 @@ namespace BuildBeacon
                 piece.m_blockRadius = BeaconSpacing;
                 piece.m_blockingPieces = new List<Piece>(pieces);
             }
-            Log.LogInfo($"Beacon spacing: {BeaconSpacing} m between {string.Join(" and ", pieces.Select(p => p.name))}");
+            Verbose($"Beacon spacing: {BeaconSpacing} m between {string.Join(" and ", pieces.Select(p => p.name))}");
         }
 
         /// <summary>
@@ -336,7 +376,7 @@ namespace BuildBeacon
                     bool centered = TryFindCrystalCenter(prefab, out var center);
                     glow.transform.localPosition = pivot != null || !centered ? Vector3.zero : center;
                     beacon.m_activeEffect = glow;
-                    Log.LogInfo($"Beacon glow: \"{flame.name}\" from {source}, " +
+                    Verbose($"Beacon glow: \"{flame.name}\" from {source}, " +
                                 (pivot != null ? $"on the crystal's pivot at {pivot.localPosition}" : centered ? $"centered on the crystal at {center}" : "crystal not found, left at the prefab origin") +
                                 $"; lights [{string.Join(", ", glow.GetComponentsInChildren<Light>(true).Select(l => $"{l.type} {l.color} r{l.range:0.#}"))}]" +
                                 (meshes.Length > 0 ? $"; removed {meshes.Length} mesh object(s) from the clone" : ""));
@@ -382,7 +422,7 @@ namespace BuildBeacon
 
                     var entry = MaterialTemplates.FirstOrDefault(t => t.unityMaterial == "*" || mat.name.StartsWith(t.unityMaterial));
                     if (entry.glow) DressGlow(mat, entry.vanillaToken, emission, authoredGlow);
-                    else if (authoredGlow) Log.LogInfo($"Beacon material \"{mat.name}\": kept Standard (emissive, no glow template)");
+                    else if (authoredGlow) Verbose($"Beacon material \"{mat.name}\": kept Standard (emissive, no glow template)");
                     else DressStone(mat, entry.vanillaToken, pieceShader, UntintedMaterials.Contains(entry.unityMaterial) ? Color.white : tint);
                 }
             }
@@ -412,7 +452,7 @@ namespace BuildBeacon
                 mat.SetFloat("_TriplanarScale", StoneTextureScale);
                 mat.EnableKeyword("_TRIPLANARMAP_ON");
             }
-            Log.LogInfo($"Beacon material \"{mat.name}\": Standard -> {pieceShader.name} with textures from \"{template.name}\", tint {tint}");
+            Verbose($"Beacon material \"{mat.name}\": Standard -> {pieceShader.name} with textures from \"{template.name}\", tint {tint}");
         }
 
         /// <summary>
@@ -457,7 +497,7 @@ namespace BuildBeacon
                 mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
             }
 
-            Log.LogInfo($"Beacon material \"{mat.name}\": {(templateCanEmit ? "copied" : "textures from")} \"{template.name}\" on {mat.shader.name}, keywords [{string.Join(" ", mat.shaderKeywords)}], emission {mat.GetColor("_EmissionColor")}");
+            Verbose($"Beacon material \"{mat.name}\": {(templateCanEmit ? "copied" : "textures from")} \"{template.name}\" on {mat.shader.name}, keywords [{string.Join(" ", mat.shaderKeywords)}], emission {mat.GetColor("_EmissionColor")}");
         }
 
         /// <summary>
@@ -473,7 +513,7 @@ namespace BuildBeacon
             if (mat.HasProperty("_RippleDistance")) mat.SetFloat("_RippleDistance", 0f);
             mat.DisableKeyword("_VALUENOISEVERTEX_ON");
             mat.DisableKeyword("_PARALLAXMAP");
-            Log.LogInfo($"Beacon material \"{mat.name}\": template \"{template.name}\" had vertex noise {vertexNoise:0.###}, ripple {ripple:0.###}, keywords [{string.Join(" ", template.shaderKeywords)}]; vertex effects and parallax disabled");
+            Verbose($"Beacon material \"{mat.name}\": template \"{template.name}\" had vertex noise {vertexNoise:0.###}, ripple {ripple:0.###}, keywords [{string.Join(" ", template.shaderKeywords)}]; vertex effects and parallax disabled");
         }
 
         private static readonly Dictionary<string, Material> VanillaMaterialCache = new Dictionary<string, Material>();
@@ -540,7 +580,7 @@ namespace BuildBeacon
                 {
                     VanillaMaterialCache[cacheKey] = fromPrefab;
                     var others = mats.Select(x => x.mat.name).Where(n => n != fromPrefab.name).Distinct().ToList();
-                    Log.LogInfo($"Vanilla material for \"{token}\": \"{fromPrefab.name}\" on {fromPrefab.shader.name}" +
+                    Verbose($"Vanilla material for \"{token}\": \"{fromPrefab.name}\" on {fromPrefab.shader.name}" +
                                 (others.Count > 0 ? $" (prefab also uses: {string.Join(", ", others)})" : ""));
                 }
                 else
@@ -569,7 +609,7 @@ namespace BuildBeacon
             {
                 VanillaMaterialCache[cacheKey] = pick;
                 var others = candidates.Where(m => m != pick).Select(m => m.name).ToList();
-                Log.LogInfo($"Vanilla material for \"{token}\": \"{pick.name}\"" + (others.Count > 0 ? $" (other candidates: {string.Join(", ", others)})" : ""));
+                Verbose($"Vanilla material for \"{token}\": \"{pick.name}\"" + (others.Count > 0 ? $" (other candidates: {string.Join(", ", others)})" : ""));
             }
             return pick;
         }
@@ -596,7 +636,7 @@ namespace BuildBeacon
             if (IsEmpty(wnt.m_hitEffect)) wnt.m_hitEffect = tWnt.m_hitEffect;
             if (IsEmpty(wnt.m_switchEffect)) wnt.m_switchEffect = tWnt.m_switchEffect;
 
-            Log.LogInfo($"Beacon effects from \"{EffectTemplatePrefab}\": place [{Names(piece.m_placeEffect)}], " +
+            Verbose($"Beacon effects from \"{EffectTemplatePrefab}\": place [{Names(piece.m_placeEffect)}], " +
                         $"destroyed [{Names(wnt.m_destroyedEffect)}], hit [{Names(wnt.m_hitEffect)}], switch [{Names(wnt.m_switchEffect)}]");
         }
 
@@ -713,7 +753,7 @@ namespace BuildBeacon
             station.m_connectionPoint = point;
 
             var first = prefab.GetComponents<MonoBehaviour>().FirstOrDefault(c => c is Interactable);
-            if (first is BeaconController) Log.LogInfo("Beacon crafting station added; the beacon panel keeps the use key");
+            if (first is BeaconController) Verbose("Beacon crafting station added; the beacon panel keeps the use key");
             else Log.LogWarning($"Beacon: first Interactable is {first?.GetType().Name ?? "none"}, not BeaconController; use would open the wrong window");
         }
 
@@ -790,12 +830,13 @@ namespace BuildBeacon
                 ext.m_stack = true;
                 ext.m_continousConnection = false;
                 PieceManager.Instance.AddPiece(piece);
-                Log.LogInfo($"Boss holder {h.id} registered from {(asset != null ? h.asset : "guard_stone")}: " +
+                s_registered.Add(piece.PiecePrefab);
+                Verbose($"Boss holder {h.id} registered from {(asset != null ? h.asset : "guard_stone")}: " +
                             $"{root.GetComponentsInChildren<Transform>(true).Count(t => t.CompareTag("snappoint"))} snap points, " +
                             $"attach_trophy {(root.transform.Find(BossHolder.AttachPoint) != null ? "found" : "missing")}");
             }
             s_appliedHolderRange = Cfg.HolderRange.Value;
-            Log.LogInfo($"Boss holders: link range {s_appliedHolderRange} m, thread \"{connection.name}\"");
+            Verbose($"Boss holders: link range {s_appliedHolderRange} m, thread \"{connection.name}\"");
         }
 
         /// <summary>
@@ -811,7 +852,7 @@ namespace BuildBeacon
             BossHolder.ApplyRange();
             MobRack.ApplyRange();
             s_appliedHolderRange = range;
-            Log.LogInfo($"Boss holders: link range now {range} m");
+            Verbose($"Boss holders: link range now {range} m");
         }
 
         /// <summary>
@@ -885,7 +926,8 @@ namespace BuildBeacon
                 ext.m_stack = true;
                 ext.m_continousConnection = false;
                 PieceManager.Instance.AddPiece(new CustomPiece(prefab, true, cfg));
-                Log.LogInfo($"Trophy rack {r.id} registered from {r.asset}: " +
+                s_registered.Add(prefab);
+                Verbose($"Trophy rack {r.id} registered from {r.asset}: " +
                             $"{prefab.GetComponentsInChildren<Transform>(true).Count(t => t.CompareTag("snappoint"))} snap points, " +
                             $"{attaches}/{MobRack.SlotCount} attach points, {slots}/{MobRack.SlotCount} slots" +
                             (r.fitToFace ? ", trophies fit the face" : ""));
@@ -917,7 +959,7 @@ namespace BuildBeacon
                 bool snap = child.name.StartsWith("snappoint") || child.name == "Bottom Center";
                 if (snap && !child.CompareTag("snappoint")) { child.gameObject.tag = "snappoint"; fixedCount++; }
             }
-            if (fixedCount > 0) Log.LogInfo($"{prefab.name}: tagged {fixedCount} snap point(s) that arrived without the snappoint tag");
+            if (fixedCount > 0) Verbose($"{prefab.name}: tagged {fixedCount} snap point(s) that arrived without the snappoint tag");
         }
 
         /// <summary>
@@ -936,7 +978,7 @@ namespace BuildBeacon
                 child.gameObject.tag = "Untagged";
                 dropped++;
             }
-            Log.LogInfo($"{prefab.name}: snaps by its centre only ({kept} kept, {dropped} snap points switched off)");
+            Verbose($"{prefab.name}: snaps by its centre only ({kept} kept, {dropped} snap points switched off)");
         }
 
         /// <summary>
@@ -990,7 +1032,7 @@ namespace BuildBeacon
                 r.sharedMaterials = mats;
             }
             ring.m_prefab = segment;
-            Log.LogInfo($"Beacon ring tinted {color}: {tinted} colour propert{(tinted == 1 ? "y" : "ies")} on the segment \"{segment.name}\"");
+            Verbose($"Beacon ring tinted {color}: {tinted} colour propert{(tinted == 1 ? "y" : "ies")} on the segment \"{segment.name}\"");
         }
 
         private static void AddLocalization()

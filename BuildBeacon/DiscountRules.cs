@@ -101,7 +101,7 @@ namespace BuildBeacon
                 $"Loaded {BossRules.Select(r => r.Trophy).Distinct(StringComparer.OrdinalIgnoreCase).Count()} boss trophies " +
                 $"({BossRules.Count} materials at {BossPercent.ToString("0.#", CultureInfo.InvariantCulture)}% off), {MobRules.Count} creature rules ({StackableTrophies.Count} stackable trophies), " +
                 $"levels {string.Join("/", LevelPercents.Select(v => v.ToString("0.#", CultureInfo.InvariantCulture)))}%");
-            ValidateAgainstObjectDB(); // no-op before the item database exists; the plugin calls it again once it does
+            ValidateAgainstObjectDB(); // no-op until the game's full item database exists (the plugin calls it again then)
         }
 
         // ---- Trophy classification ----
@@ -200,16 +200,31 @@ namespace BuildBeacon
 
         // ---- Validation against the item database ----
 
+        /// <summary>Vanilla items that are in the game's full item database; an ObjectDB without them is not that
+        /// database (at the main menu, other mods can leave a partial one behind, against which every rule looks
+        /// wrong: 150 false warnings in a player's log).</summary>
+        private static readonly string[] FullDatabaseSentinels = { "Wood", "TrophyDeer" };
+
+        /// <summary>The rules (boss and creature text) last checked against the full database: each set is checked
+        /// once, not again on every world load or unchanged reload.</summary>
+        private static string s_validatedRules;
+
         /// <summary>
-        /// Warn about rule trophies and materials that do not match any item. Runs once the ObjectDB is populated
-        /// and again after each rules reload, so a typo in a rules file shows up in the log straight away.
+        /// Warn about rule trophies and materials that do not match any item. Runs when the game's item database is
+        /// complete (Jotunn's ItemManager.OnItemsRegistered, each game start) and after each rules reload, so a typo in
+        /// a rules file shows up in the log straight away; a set of rules already checked is skipped.
         /// </summary>
         public static void ValidateAgainstObjectDB()
         {
-            if (ObjectDB.instance == null || ObjectDB.instance.m_items == null || ObjectDB.instance.m_items.Count == 0) return;
+            var db = ObjectDB.instance;
+            if (db == null || db.m_items == null || FullDatabaseSentinels.Any(name => db.GetItemPrefab(name) == null)) return;
+            var cfg = BuildBeaconPlugin.Cfg;
+            var rules = cfg.BossRules.Value + "\n\n" + cfg.MobRules.Value;
+            if (rules == s_validatedRules) return;
+            s_validatedRules = rules;
 
             var known = new HashSet<string>();
-            foreach (var go in ObjectDB.instance.m_items)
+            foreach (var go in db.m_items)
             {
                 var drop = go != null ? go.GetComponent<ItemDrop>() : null;
                 if (drop == null) continue;

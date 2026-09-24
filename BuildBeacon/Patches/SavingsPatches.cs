@@ -20,7 +20,7 @@ namespace BuildBeacon.Patches
             {
                 if (__instance != Player.m_localPlayer) return;
                 var plan = RequirementSwap.PlanFor(piece);
-                if (BuildBeaconPlugin.Cfg.DevMode.Value)
+                if (BuildBeaconPlugin.Cfg.VerboseLogging.Value)
                 {
                     var pos = RequirementSwap.GhostPos(__instance);
                     BuildBeaconPlugin.Log.LogInfo(

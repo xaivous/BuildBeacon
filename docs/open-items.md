@@ -12,7 +12,7 @@ own lists. Move an item to "Done" with the date when it lands; delete Done entri
    `BuildBeaconPlugin.CentreSnapOnlyOnWalls` untags every snap point but the centre on those two pieces at
    registration (the points stay in the prefabs). Side effect: Trophy Panels no longer snap edge to edge to tile.
    To revisit: find out why the edge and corner points misbehave (which walls, which points; the `[diag] ... pushed N
-   m out of it` lines in dev mode show when the push fires), fix, and bring them back by removing the call.
+   m out of it` lines, with `VerboseLogging` on, show when the push fires), fix, and bring them back by removing the call.
 2. **Floating trophy heads** (later; noted 2026-09-23). Mounted trophies stand off their surface by a gap that varies
    from trophy to trophy instead of sitting against it. Mounting is `BeaconTrophyDisplay.Build` (vanilla item stand
    style, each trophy's own attach child), used by the beacon's alcoves, the holders' hooks and the rack alcoves;
@@ -31,15 +31,12 @@ own lists. Move an item to "Done" with the date when it lands; delete Done entri
 
 Publishing (public repository, GitHub Pages site with the matrix tool, Thunderstore) is planned in
 `docs/plans/publish.md` (saved for later); what must happen before the first upload is the checklist
-`docs/PREPUBLISH.md`, which covers item 4 below.
+`docs/PREPUBLISH.md`.
 
 3. **Check the vanilla-style slot ownership in game.** With two clients: while one has the beacon panel open, the
    other gets "In use", and using a trophy on the beacon gives "In use" after about 2 seconds; the same for holders
    and rack alcoves. Inside someone else's ward, opening the beacon or using a trophy on the beacon, a holder or a rack
    makes the ward flash and refuse, while building nearby is still discounted.
-4. **Before publishing: turn `DevMode` off by default.** `BeaconConfig.cs` defaults it to `true` for development
-   (the user's `TODO: BEFORE PUBLISH, CHANGE THIS TO FALSE`); shipped as is, every player's local worlds would start
-   with devcommands, god mode and fly. The Thunderstore page does not mention it.
 
 ## Notes, not actions
 
@@ -81,3 +78,4 @@ with no unknown-trophy warnings). Since then:
   their fixed places at the tuned sizes, level and radius, holders and racks linking, the lit crystal and shards).
 - 2026-09-24: the Thunderstore icon: the user's art, `art/icon.webp` (1254×1254 master) scaled to the 256×256
   `BuildBeacon/Package/icon.png`.
+- 2026-09-24: DevMode defaults to false (the release check refuses true).

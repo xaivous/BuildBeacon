@@ -261,6 +261,25 @@ next handoff (the `handoff` skill), fold this into a new dated file and reset it
   now defaults to false (an existing config file keeps its saved value; the Dev profile's is true), and the manifest's
   `website_url` is `https://xaivous.github.io/BuildBeacon/`: `check --release --online` passes, with one warning
   (BepInExPack 5.4.2351 is out; the manifest has 5.4.2333).
+- Quieter log (the user): new local setting `VerboseLogging` (5. Dev, off) and `BuildBeaconPlugin.Verbose(...)`. Behind it:
+  the piece registration details (materials, glow, effects, ring, snap points, each piece), each trophy's display fit,
+  the savings-rounding and Hugin lines, and every `[diag]` line (placement push, placed-piece plan, slow inventory
+  changes, and DiagnosticPatches' beacon ApplyDamage/Destroy warnings with stack traces, PREPUBLISH C5). These were on
+  DevMode, which now only means cheats in local worlds. Players see one line instead: "Registered 6 building pieces:
+  Build Beacon, ...". Still at normal level: loaded, settings carried over, server settings, rules loaded/written,
+  drops on destroy, console command output, warnings and errors. To read diagnostics, turn VerboseLogging on.
+- Server settings (the user asked whether configs are server-authoritative, like SpeedyPaths): they already were. Every
+  `ConfigUtil.Synced` entry (and the rules, through the BossRules/MobRules entries) is admin-only, which Jotunn's
+  SynchronizationManager pushes to clients; the Default profile's log shows it (BossPercent 95 from the server on
+  joining, 100 again after leaving). New: `LogServerSettings` on `SynchronizationManager.OnConfigurationSynchronized`
+  logs "Using the server's settings: ..." (or "The server changed its settings: ...") on clients, with the values
+  in force. README's Multiplayer section says so. Built; not yet seen in game.
+- False rule warnings (the user's `Default` profile, published 0.1.0 with Adventure Backpacks, PlantEverything, BetterUI
+  and others): 62 "Rule trophy ... does not match any item" and 95 "Rule material ..." warnings at the main menu, right
+  after piece registration. That check ran against an ObjectDB some other mod leaves at the menu without the game's
+  items (the Dev profile has none there, so it was skipped). Now `ValidateAgainstObjectDB` runs on Jotunn's
+  `ItemManager.OnItemsRegistered` (the full database, each game start) and after rules reloads, skips a database without
+  `Wood` and `TrophyDeer`, and checks each set of rules once (`s_validatedRules`). The registration-time call is gone.
 - 0.2.0 (the user): the plugin GUID drops `com.`: `xaivous.buildbeacon`. It names only BepInEx's config file (saved
   data uses `xai_` keys, the rules files fixed names, Jotunn's version check already needs matching major.minor), so
   `BuildBeaconPlugin.MigrateConfigFile` copies `com.xaivous.buildbeacon.cfg` to the new name and reloads it when the

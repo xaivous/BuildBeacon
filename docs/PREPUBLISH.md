@@ -32,8 +32,8 @@ Decided 2026-09-24: MIT licence (done), the author email stays in the history, t
       holders and racks (today's still says "Boss-trophy-powered").
 - [x] **C3 `website_url`**: `https://xaivous.github.io/BuildBeacon/`, the Pages site (2026-09-24).
 - [x] **C4 DevMode off by default**: `BeaconConfig.cs` (2026-09-24); the release check refuses `true`.
-- [ ] **C5 Quiet the diagnostics** (Claude): gate `DiagnosticPatches`' beacon ApplyDamage/Destroy/Remove warnings
-      (full stack traces for every player) behind DevMode.
+- [x] **C5 Quiet the diagnostics** (2026-09-24): `DiagnosticPatches`' beacon ApplyDamage/Destroy warnings, the other
+      `[diag]` lines and the piece registration details log only with the new local `VerboseLogging` setting (off).
 - [x] **C6 Changelog**: `BuildBeacon/CHANGELOG.md` has the 0.1.0 entry; the release zip takes it from there.
 - [x] **C7 Dependency versions** (2026-09-24): `BepInExPack_Valheim-5.4.2351` and `Jotunn-2.30.2`, both the latest;
       the build compiles against the Dev profile's BepInEx (`BEPINEX_PATH`). Recheck at publish time: `check --online`

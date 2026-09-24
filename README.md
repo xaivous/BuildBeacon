@@ -179,7 +179,9 @@ The mod must be installed on the server and on every client. Jötunn enforces th
 different version, cannot join.
 
 Gameplay settings are synced from the server and only admins can change them. The server's rules files are the ones
-that count, and changes reach every player without a restart.
+that count, and changes reach every player without a restart. On joining, a player's log says so: "Using the server's
+settings", with the values in force; your own settings come back when you leave. The per-player settings (the radius
+ring, trophy sources, trophy placement and sizes) stay your own.
 
 ## Configuration
 
@@ -207,6 +209,7 @@ carry over automatically).
 | Radius & Slots | BeaconMobSlots | 4 | Creature trophy slots in the beacon itself; bosses add none. Racks add four each. |
 | Boss Rules | BossRules | see below | Mirror of the boss rules file. Do not edit here. |
 | Mob Rules | MobRules | see below | Mirror of the creature rules file. Do not edit here. |
+| Dev | VerboseLogging | false | Extra detail in the log (how the pieces are set up, `[diag]` lines), for bug reports and development. Per player. |
 
 ### Changing which trophies do what
 

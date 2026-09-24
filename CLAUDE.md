@@ -13,8 +13,8 @@ Rules that are easy to get wrong:
   `tools/blender/`), never into the mesh. Regenerate by running it.
 - Unity `.mat` assets own material look; the FBX importer remaps by name onto them. The plugin's `MaterialTemplates`
   table decides which vanilla textures dress which part.
-- Read the BepInEx log (`valheim-debug` script) before forming a theory. If it is silent, the `[diag]` lines and the
-  console commands (`beacon_dump`, `beacon_materials`, `beacon_prefabs`, `beacon_tree`) are the next step.
+- Read the BepInEx log (`valheim-debug` script) before forming a theory. If it is silent, the `[diag]` lines (turn on
+  `VerboseLogging` in the Dev section) and the console commands (`beacon_dump`, `beacon_materials`, `beacon_prefabs`, `beacon_tree`) are the next step.
 - `WearNTear.m_noSupportWear = true` means the piece *requires* support on 1.0. Check signatures with
   `tools/sigdump` before writing Harmony patches; one bad patch disables them all.
 - Commit only when asked, with descriptive messages, unrelated work in separate commits.

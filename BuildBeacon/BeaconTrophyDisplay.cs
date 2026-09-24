@@ -218,7 +218,7 @@ namespace BuildBeacon
             holder.transform.localScale = Vector3.one * scale;
             // Centre sideways and vertically on the attach point, back face on the niche wall.
             holder.transform.localPosition = -scale * new Vector3(bounds.center.x, bounds.center.y, bounds.min.z);
-            BuildBeaconPlugin.Log.LogInfo($"Trophy display: {prefabName} in {mount.name} ({(fixedScale.HasValue ? "Fixed" : faceFit.HasValue ? "Face" : placement.ToString())}), size {size.ToString("F2")} scaled x{scale:F2}");
+            BuildBeaconPlugin.Verbose($"Trophy display: {prefabName} in {mount.name} ({(fixedScale.HasValue ? "Fixed" : faceFit.HasValue ? "Face" : placement.ToString())}), size {size.ToString("F2")} scaled x{scale:F2}");
             return holder;
         }
 

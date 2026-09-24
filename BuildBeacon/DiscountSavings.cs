@@ -87,7 +87,7 @@ namespace BuildBeacon
             foreach (var s in plan)
             {
                 s_balance[s.Material] = s.NewBalance;
-                if (s.Bonus) BuildBeaconPlugin.Log.LogInfo($"Savings: rounding added up to one {s.Material} off this piece");
+                if (s.Bonus) BuildBeaconPlugin.Verbose($"Savings: rounding added up to one {s.Material} off this piece");
             }
             Save();
         }

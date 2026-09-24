@@ -103,7 +103,7 @@ namespace BuildBeacon.Patches
             }
             if (push <= Embed) return;
             ghost.position += forward * (push - Embed);
-            if (BuildBeaconPlugin.Cfg.DevMode.Value && (target != s_loggedTarget || Mathf.Abs(push - s_loggedPush) > 0.01f))
+            if (BuildBeaconPlugin.Cfg.VerboseLogging.Value && (target != s_loggedTarget || Mathf.Abs(push - s_loggedPush) > 0.01f))
             {
                 s_loggedTarget = target;
                 s_loggedPush = push;

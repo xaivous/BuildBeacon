@@ -42,7 +42,7 @@ namespace BuildBeacon.Patches
                 });
             }
             player.ShowTutorial(Key, false);
-            BuildBeaconPlugin.Log.LogInfo("Hugin: Build Beacon tutorial shown");
+            BuildBeaconPlugin.Verbose("Hugin: Build Beacon tutorial shown");
         }
     }
 }
