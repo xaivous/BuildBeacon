@@ -104,8 +104,8 @@ public). Not done yet: the screenshots, the Thunderstore button (`THUNDERSTORE_U
 - `BuildBeacon/Package/`: `manifest.json` (name BuildBeacon, 0.1.0, depends on `denikson-BepInExPack_Valheim-5.4.2333`
   and `ValheimModding-Jotunn-2.30.2`), `README.md` (a copy of the root `README.md`), `DEFAULT_DISCOUNTS.md`,
   `icon.png` (256×256, the user's plugin icon, scaled from `art/icon.webp`).
-- A Release build (`dotnet build BuildBeacon.sln -c Release`) runs `scripts/publish.ps1`: copies the DLL (bundle
-  embedded) to `Package/plugins/`, the README, and zips `Package/*` to `BuildBeacon/bin/Release/net48/BuildBeacon.zip`.
+- Packaging and publishing: `tools/release/release.py` (2026-09-24; `docs/releasing.md`) checks the version in its
+  three places, builds Release, zips `dist/BuildBeacon-<version>.zip` from the sources and uploads it with `tcli`.
 - `NetworkCompatibility(EveryoneMustHaveMod, Minor)`: the server and every client need it, minor versions must match.
 
 ### To do

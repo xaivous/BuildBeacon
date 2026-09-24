@@ -1,0 +1,33 @@
+# Version and package checks for BuildBeacon (tools/release/release.py). They need no game files, so they run here;
+# building and publishing need Valheim's assemblies and run on a developer machine (docs/releasing.md).
+#
+# - Every push to main and every pull request: the version agrees in BuildBeaconPlugin.cs, manifest.json and
+#   CHANGELOG.md, and the manifest, icon and thunderstore.toml follow Thunderstore's rules.
+# - A pushed release tag (v1.2.3): the same, plus the tag matches the version, the pre-publish guards (DevMode off,
+#   website_url set, a real changelog entry) and the dependencies checked against Thunderstore.
+name: Release checks
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Version and package checks
+        if: github.ref_type != 'tag'
+        run: python tools/release/release.py check
+      - name: Release tag checks
+        if: github.ref_type == 'tag'
+        run: python tools/release/release.py check --tag "${GITHUB_REF_NAME}" --release --online

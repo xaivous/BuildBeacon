@@ -1,6 +1,6 @@
 ---
 name: build-deploy
-description: Build the BuildBeacon Valheim mod and get it into the r2modman Dev profile for testing, then verify the deploy actually happened. Use this whenever C# under BuildBeacon/ changes, whenever the user says build, rebuild, redeploy, "try it in game", or reports that an in-game change isn't showing up, and after any Unity bundle rebuild. Also use it to package a Release zip for Thunderstore.
+description: Build the BuildBeacon Valheim mod and get it into the r2modman Dev profile for testing, then verify the deploy actually happened. Use this whenever C# under BuildBeacon/ changes, whenever the user says build, rebuild, redeploy, "try it in game", or reports that an in-game change isn't showing up, and after any Unity bundle rebuild. Also use it (with tools/release/release.py) to check the version and package or publish a Release for Thunderstore.
 ---
 
 # Build and deploy the mod
@@ -48,17 +48,24 @@ method's real 1.0 signature before patching it.
 If Unity is focused during the build it may log "Build asset version error"; that is transient and clears on the next
 refresh.
 
-## Release packaging
+## Release packaging and publishing
+
+Use the release flow, not a bare Release build; it is documented in `docs/releasing.md`:
 
 ```bash
-dotnet build BuildBeacon.sln -c Release
+uv run --no-project python tools/release/release.py check      # version agrees in all three places, package rules
+uv run --no-project python tools/release/release.py bump patch # new version: PluginVersion, manifest, CHANGELOG
+uv run --no-project python tools/release/release.py package    # Release build + dist/BuildBeacon-<version>.zip
+uv run --no-project python tools/release/release.py publish    # the rehearsal: every check and the zip, no upload
 ```
 
-Release runs the same publish script in packaging mode: it copies the DLL, the root `README.md` and
-`BuildBeacon/CHANGELOG.md` (Thunderstore shows it as the Changelog tab) into `BuildBeacon/Package/` and zips that folder to `BuildBeacon/bin/Release/net48/BuildBeacon.zip` for Thunderstore.
-The bundle is inside the DLL, so nothing else needs to ship. Bump `PluginVersion` in `BuildBeaconPlugin.cs` and
-`version_number` in `BuildBeacon/Package/manifest.json` together; the Jötunn compatibility check uses minor-version
-strictness, so server and clients must match on `major.minor`.
+`package` builds the zip from the sources (manifest and icon from `BuildBeacon/Package/`, the root `README.md`,
+`BuildBeacon/CHANGELOG.md`, `DEFAULT_DISCOUNTS.md`, the Release DLL under `plugins/`) and verifies it. A plain
+`dotnet build -c Release` only compiles now; the publish script no longer zips. The bundle is inside the DLL, so
+nothing else needs to ship. The version must match in `PluginVersion`, the manifest's `version_number` and the top
+CHANGELOG heading (`bump` moves all three); the Jötunn compatibility check uses minor-version strictness, so server
+and clients must match on `major.minor`. `upload` sends it with the Thunderstore CLI (it
+needs the token); the `release` skill runs these commands and owns the upload confirmation.
 
 ## After deploying
 

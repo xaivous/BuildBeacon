@@ -1,0 +1,21 @@
+# Thunderstore CLI (tcli) settings for publishing BuildBeacon; used by tools/release/release.py.
+#
+# Only what BuildBeacon/Package/manifest.json cannot say lives here: the team that publishes, the community and the
+# categories. The package's name, version, description and dependencies come from the manifest inside the zip
+# (release.py passes the name and version to tcli from it, and checks package.name matches).
+
+[config]
+schemaVersion = "0.0.1"
+
+[package]
+# The Thunderstore team that owns the package (the service account token must belong to it).
+namespace = "xaivous"
+name = "BuildBeacon"
+
+[publish]
+repository = "https://thunderstore.io"
+communities = ["valheim"]
+
+[publish.categories]
+# Slugs from https://thunderstore.io/api/experimental/community/valheim/category/
+valheim = ["mods", "building", "crafting", "client-side", "server-side", "ai-generated"]

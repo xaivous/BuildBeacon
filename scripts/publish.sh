@@ -56,18 +56,6 @@ if [ "$target" = "Debug" ]; then
 fi
 
 if [ "$target" = "Release" ]; then
-    packagePath="$projectPath/Package"
-    mkdir -p "$packagePath/plugins"
-    cp "$targetPath/$targetAssembly" "$packagePath/plugins/"
-    cp "$projectPath/../README.md" "$packagePath/"
-    cp "$projectPath/CHANGELOG.md" "$packagePath/"
-
-    if command -v zip > /dev/null; then
-        [ -e "$name.zip" ] && rm "$name.zip"
-        cd "$packagePath"
-        zip -r "../$name.zip" . > /dev/null
-        echo "Build successful, your zip is ready for upload at $(realpath ../$name.zip)."
-    else
-        echo "Skipping plugin zipping, zip command isn't available."
-    fi
+    # The Thunderstore zip is built, checked and published by tools/release/release.py (docs/releasing.md).
+    echo "Release build done. Package it with: uv run --no-project python tools/release/release.py package"
 fi

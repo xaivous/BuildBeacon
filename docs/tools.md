@@ -3,6 +3,11 @@
 Scripts under `tools/` that are run by hand. The pipelines (build, deploy, bundle, log reading) are skills under
 `.claude/skills/` and are not listed here.
 
+## Release flow
+
+`tools/release/release.py` checks the version, builds, packages and publishes to Thunderstore; its own guide is
+[docs/releasing.md](releasing.md).
+
 ## Trophy balance matrix
 
 `tools/balance/gen_matrix.py` writes `tools/balance/balance_matrix.html`: every trophy in the game, grouped by biome,

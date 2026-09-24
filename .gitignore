@@ -379,3 +379,10 @@ Environment.props
 
 # GitHub Pages site build output (tools/site/build_site.py)
 site/_build/
+
+# Release packages (tools/release/release.py)
+dist/
+
+# Keep the release tool and skill: the [Rr]elease/ rule above is meant for build output
+!tools/release/
+!.claude/skills/release/

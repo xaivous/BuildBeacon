@@ -55,16 +55,8 @@ if ($Target.Equals("Debug")) {
 }
 
 if($Target.Equals("Release")) {
-    Write-Host "Packaging for ThunderStore..."
-    $Package="Package"
-    $PackagePath="$ProjectPath\$Package"
-
-    Write-Host "$PackagePath\$TargetAssembly"
-    New-Item -Type Directory -Path "$PackagePath\plugins" -Force
-    Copy-Item -Path "$TargetPath\$TargetAssembly" -Destination "$PackagePath\plugins\$TargetAssembly" -Force
-    Copy-Item -Path "$ProjectPath\..\README.md" -Destination "$PackagePath\README.md" -Force
-    Copy-Item -Path "$ProjectPath\CHANGELOG.md" -Destination "$PackagePath\CHANGELOG.md" -Force
-    Compress-Archive -Path "$PackagePath\*" -DestinationPath "$TargetPath\$name.zip" -Force
+    # The Thunderstore zip is built, checked and published by tools/release/release.py (docs/releasing.md).
+    Write-Host "Release build done. Package it with: uv run --no-project python tools/release/release.py package"
 }
 
 # Pop Location

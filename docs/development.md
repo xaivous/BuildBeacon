@@ -19,8 +19,8 @@ The compiled dll and a dll.mdb debug file are copied to `<ValheimDir>\BepInEx\pl
 
 ### Building Release
 
-A compressed file with the binaries is created in `<JotunnModStub>\Packages`ready for upload to ThunderStore.
-Dont forget to include your information in the manifest.json and to change the project's readme file.
+A Release build only compiles. The Thunderstore zip is built, checked and published by
+`tools/release/release.py`; see [Releasing BuildBeacon](releasing.md) for the version check, packaging and publishing.
 
 ## Developing Assets with Unity
 
