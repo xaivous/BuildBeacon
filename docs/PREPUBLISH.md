@@ -24,8 +24,8 @@ Decided 2026-09-24: MIT licence (done), the author email stays in the history, t
 
 ## Thunderstore package (plan Stage C)
 
-- [ ] **C1 Icon**: a real 256×256 `BuildBeacon/Package/icon.png` (you: Midjourney prompt in the plan; or Claude: a
-      Blender render of the lit beacon).
+- [x] **C1 Icon**: a real 256×256 `BuildBeacon/Package/icon.png`: the user's art (2026-09-24), kept full size as
+      `art/icon.webp` (1254×1254) and scaled down with Lanczos.
 - [ ] **C2 Description** in `Package/manifest.json` (Claude): ≤ 250 characters, covering creature levels, boss
       holders and racks (today's still says "Boss-trophy-powered").
 - [ ] **C3 `website_url`** in the manifest (Claude): the Pages site, or the repository until the site exists.

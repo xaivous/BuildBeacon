@@ -103,7 +103,7 @@ public). Not done yet: the screenshots, the Thunderstore button (`THUNDERSTORE_U
 
 - `BuildBeacon/Package/`: `manifest.json` (name BuildBeacon, 0.1.0, depends on `denikson-BepInExPack_Valheim-5.4.2333`
   and `ValheimModding-Jotunn-2.30.2`), `README.md` (a copy of the root `README.md`), `DEFAULT_DISCOUNTS.md`,
-  `icon.png` (256×256, the stub).
+  `icon.png` (256×256, the user's plugin icon, scaled from `art/icon.webp`).
 - A Release build (`dotnet build BuildBeacon.sln -c Release`) runs `scripts/publish.ps1`: copies the DLL (bundle
   embedded) to `Package/plugins/`, the README, and zips `Package/*` to `BuildBeacon/bin/Release/net48/BuildBeacon.zip`.
 - `NetworkCompatibility(EveryoneMustHaveMod, Minor)`: the server and every client need it, minor versions must match.
@@ -112,7 +112,7 @@ public). Not done yet: the screenshots, the Thunderstore button (`THUNDERSTORE_U
 
 | # | Item | Notes |
 |---|---|---|
-| C1 | **Icon** | A real 256×256 PNG (see "Icon" below). Replace `Package/icon.png` |
+| C1 | **Icon** | Done 2026-09-24: the user's art, master `art/icon.webp`, 256×256 `Package/icon.png` |
 | C2 | **Manifest description** | Still "Boss-trophy-powered beacon that discounts build costs in a radius." Rewrite (≤ 250 characters), e.g. "A craftable beacon that makes building cheaper nearby: creature trophies give discount levels, boss trophies on holders make a biome's materials free. Trophy racks and holders extend its level and radius." |
 | C3 | **`website_url`** | The Pages URL (or the repository until the site is up) |
 | C4 | **DevMode off by default** | Open item 10: `BeaconConfig.cs` defaults it to true (devcommands, god, fly in local worlds) |

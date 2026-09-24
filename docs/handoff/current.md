@@ -242,6 +242,9 @@ next handoff (the `handoff` skill), fold this into a new dated file and reset it
   prefixed `roadmap-`/`changelog-`). `matrix.js` routing is generic now: a hash naming a tab shows it, any other shows
   the tab whose panel holds that element; the open tab is scrolled into the tab row. Below 800 px the tabs read
   "Pieces"/"Matrix", and the tab row's scrollbar is hidden. Pages also triggers on both files.
+- Plugin icon (the user's art): the 1254×1254 original kept as `art/icon.webp` (the repository's art masters),
+  scaled with Lanczos to the 256×256 `BuildBeacon/Package/icon.png` Thunderstore needs (replacing the stub).
+  PREPUBLISH C1 ticked; open item 4 (Thunderstore icon) done, DevMode is now item 4.
 - READMEs moved (the user): the player README is now the root `README.md` (was `BuildBeacon/README.md`; still copied
   to `BuildBeacon/Package/README.md` for Thunderstore, by hand while developing and by the Release scripts, which
   now read `$ProjectPath/../README.md`); the old root README (the Jötunn stub's developer guide with the Unity, MCP
