@@ -51,7 +51,7 @@ public). Not done yet: the screenshots, the Thunderstore button (`THUNDERSTORE_U
 ### Hosting
 
 - Publish with **GitHub Actions** (Settings > Pages > Source: GitHub Actions), not from `/docs`: `docs/` holds the
-  internal notes and Jekyll would render them. Workflow `.github/workflows/pages.yml`: on push to `master` touching
+  internal notes and Jekyll would render them. Workflow `.github/workflows/pages.yml`: on push to `main` touching
   `site/`, `tools/balance/`, `BuildBeacon/BeaconConfig.cs` or `README.md`; set up Python; run the site build;
   `actions/upload-pages-artifact`; `actions/deploy-pages`.
 - The build regenerates the matrix data from `BeaconConfig.cs` on every push, so the site never drifts from the

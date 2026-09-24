@@ -68,7 +68,7 @@ uv run --no-project --with markdown python tools/site/build_site.py
 ```
 
 - Preview: the `site` configuration in `.claude/launch.json` serves `site/_build` on http://localhost:8765.
-- `.github/workflows/pages.yml` runs the same build on every push to `master` that touches the site, the README, the
+- `.github/workflows/pages.yml` runs the same build on every push to `main` that touches the site, the README, the
   manifest or the default rules, and publishes it (Settings > Pages > Source must be "GitHub Actions" once).
 - `matrix.js` parses rules the way `RulesFile`/`DiscountRules` do (`#` comments, `|` separated, names matched ignoring
   case, spaces and underscores, `*` for every material, a boss trophy's creature rules ignored). Keep it in step if the
