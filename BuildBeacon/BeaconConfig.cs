@@ -278,9 +278,10 @@ namespace BuildBeacon
                 "trophyPrefab|material|level, one per line, and trophyPrefab|Stackable for trophies whose every copy counts. " +
                 "Levels add up across a beacon's trophies; see LevelPercents.");
             
-            // TODO: BEFORE PUBLISH, CHANGE THIS TO FALSE
+            // Off by default: shipped on, every player's local worlds would start with devcommands, god mode and fly.
+            // The release check (tools/release/release.py) refuses a true default.
             const string D = "5. Dev";
-            DevMode = ConfigUtil.Local(cfg, D, "DevMode", true,
+            DevMode = ConfigUtil.Local(cfg, D, "DevMode", false,
                 "For mod development. When on, spawning into a world this machine hosts turns on devcommands, god mode " +
                 "and debug fly. Does nothing on dedicated servers or when joining someone else's world.");
 

@@ -2,7 +2,8 @@
 
 The checklist to work through before the first Thunderstore upload. Details and reasons are in
 `docs/plans/publish.md` (the item numbers match its tables); tick items off here as they land. "You" means the repo
-owner; "Claude" items are changes in the repository.
+owner; "Claude" items are changes in the repository. The release flow (`docs/releasing.md`) enforces the ones it can:
+`uv run --no-project python tools/release/release.py check --release --online` lists what still blocks a publish.
 
 ## Repository (plan Stage A)
 
@@ -28,20 +29,24 @@ Decided 2026-09-24: MIT licence (done), the author email stays in the history, t
       `art/icon.webp` (1254×1254) and scaled down with Lanczos.
 - [ ] **C2 Description** in `Package/manifest.json` (Claude): ≤ 250 characters, covering creature levels, boss
       holders and racks (today's still says "Boss-trophy-powered").
-- [ ] **C3 `website_url`** in the manifest (Claude): the Pages site, or the repository until the site exists.
-- [ ] **C4 DevMode off by default** (Claude): `BeaconConfig.cs`, the `TODO: BEFORE PUBLISH` line.
+- [x] **C3 `website_url`**: `https://xaivous.github.io/BuildBeacon/`, the Pages site (2026-09-24).
+- [x] **C4 DevMode off by default**: `BeaconConfig.cs` (2026-09-24); the release check refuses `true`.
 - [ ] **C5 Quiet the diagnostics** (Claude): gate `DiagnosticPatches`' beacon ApplyDamage/Destroy/Remove warnings
       (full stack traces for every player) behind DevMode.
-- [ ] **C6 `Package/CHANGELOG.md`** (Claude): a first entry.
+- [x] **C6 Changelog**: `BuildBeacon/CHANGELOG.md` has the 0.1.0 entry; the release zip takes it from there.
 - [ ] **C7 Dependency versions** (Claude, at publish time): current `BepInExPack_Valheim` and `Jotunn` on
-      Thunderstore; bump `JotunnLib` in the csproj and the manifest together, rebuild, retest.
+      Thunderstore; bump `JotunnLib` in the csproj and the manifest together, rebuild, retest. `check --online` says
+      when a newer one is out (BepInExPack 5.4.2351 is, against the manifest's 5.4.2333, on 2026-09-24).
 - [ ] **C8 Player README** (Claude): screenshots (absolute URLs), multiplayer note (server and every client need the
       mod), known limitations (wall pieces snap by their centre only), link to the site's matrix.
-- [ ] **C9 Version** (you decide, Claude applies): 0.1.0 or 1.0.0; `PluginVersion` and `version_number` together.
-- [ ] **C10 Name and team** (you): check "BuildBeacon" is free on Thunderstore; create or choose the team.
-- [ ] **C11 Test the zip** (together): Release build, check the zip's root (`manifest.json`, `icon.png`, `README.md`,
-      `CHANGELOG.md`, `plugins/BuildBeacon.dll`), import it into a clean r2modman profile, play a local world, then a
-      dedicated server with a client.
+- [ ] **C9 Version** (you decide, Claude applies): 0.1.0 or 1.0.0; `release.py bump 1.0.0` sets `PluginVersion`,
+      `version_number` and the CHANGELOG heading together.
+- [ ] **C10 Name and team** (you): check "BuildBeacon" is free on Thunderstore; create or choose the team, put its
+      name in `thunderstore.toml` (`package.namespace`: `xaivous`), and make a service account token for it
+      (`docs/releasing.md`).
+- [ ] **C11 Test the zip** (together): `release.py package` builds and verifies `dist/BuildBeacon-<version>.zip`
+      (`manifest.json`, `icon.png`, `README.md`, `CHANGELOG.md`, `DEFAULT_DISCOUNTS.md`, `plugins/BuildBeacon.dll`);
+      import it into a clean r2modman profile, play a local world, then a dedicated server with a client.
 - [ ] **C12 Open in-game checks** (you): `docs/open-items.md` items 1–3 (the wall snapping revisit, the
       trophy gap, the two-client slot ownership check), finished or accepted as known.
 

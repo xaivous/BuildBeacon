@@ -242,6 +242,25 @@ next handoff (the `handoff` skill), fold this into a new dated file and reset it
   prefixed `roadmap-`/`changelog-`). `matrix.js` routing is generic now: a hash naming a tab shows it, any other shows
   the tab whose panel holds that element; the open tab is scrolled into the tab row. Below 800 px the tabs read
   "Pieces"/"Matrix", and the tab row's scrollbar is hidden. Pages also triggers on both files.
+- Release flow (the user asked for building, packaging and publishing with a version check): `tools/release/release.py`
+  (stdlib Python): `check` (version agrees in PluginVersion, manifest.json and the top CHANGELOG heading; manifest,
+  icon and thunderstore.toml by Thunderstore's rules; `--release` adds DevMode off, website_url set, no changelog
+  placeholder; `--online` asks Thunderstore that dependencies exist and the published version is not ahead; `--tag`),
+  `bump`, `package` (Release build, reproducible `dist/BuildBeacon-<v>.zip`, verified), `publish` (the rehearsal: all
+  checks, git clean/pushed/tag free, the zip, no upload) and `upload` (the same, then always a typed version
+  confirmation, `tcli publish --file` with the token from TCLI_AUTH_TOKEN, TCLI_AUTH_TOKEN_FILE or
+  `~/.config/thunderstore/buildbeacon-token`, then an annotated tag). The `release` skill
+  (`.claude/skills/release/`) runs the same commands and flags from Claude; for `upload` it runs `publish`, asks the
+  user to type the version, and pipes exactly that reply to the script's prompt. `thunderstore.toml` holds only the
+  team (`xaivous`), community and categories (mods, building, crafting, client-side, server-side, ai-generated);
+  `dotnet-tools.json` pins tcli 0.2.4 (it needs only the token for `--file`; Thunderstore reads name and version from
+  the zipped manifest). CI: `.github/workflows/release-checks.yml` (check on pushes and PRs; tag checks with
+  --release --online on `v*` tags). The Release build no longer zips (`scripts/publish.*`), and the
+  `Package/README.md`/`CHANGELOG.md` copies are gone: the zip reads the root README and `BuildBeacon/CHANGELOG.md`.
+  Building cannot run in CI: Jötunn compiles against the local game's assemblies. Docs: `docs/releasing.md`. DevMode
+  now defaults to false (an existing config file keeps its saved value; the Dev profile's is true), and the manifest's
+  `website_url` is `https://xaivous.github.io/BuildBeacon/`: `check --release --online` passes, with one warning
+  (BepInExPack 5.4.2351 is out; the manifest has 5.4.2333).
 - Plugin icon (the user's art): the 1254×1254 original kept as `art/icon.webp` (the repository's art masters),
   scaled with Lanczos to the 256×256 `BuildBeacon/Package/icon.png` Thunderstore needs (replacing the stub).
   PREPUBLISH C1 ticked; open item 4 (Thunderstore icon) done, DevMode is now item 4.
