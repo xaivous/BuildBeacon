@@ -1,0 +1,22 @@
+[
+  {"query": "the runes look too white in game, can we push them to a more saturated blue", "should_trigger": true},
+  {"query": "swap the beacon's build menu icon for the new png i dropped in Assets/Beacon/icon_new.png", "should_trigger": true},
+  {"query": "make the crystal glossier in unity and get it into the game", "should_trigger": true},
+  {"query": "i added a point light under the crystal on the prefab in unity. rebuild the bundle and get it in game", "should_trigger": true},
+  {"query": "how do i change the stone colour of the pillar in unity? it reads too brown next to vanilla walls", "should_trigger": true},
+  {"query": "the bundle in BuildBeacon/Assets looks stale compared to what i see in unity, rebuild it", "should_trigger": true},
+  {"query": "make the pillar 10% taller in the generator script and push it all the way through to the game", "should_trigger": true},
+  {"query": "turn emission off on BeaconBandDark, the band shouldn't glow at all", "should_trigger": true},
+  {"query": "Unity_RunCommand keeps saying 'Unity not detected' when i try to rebuild the bundle, what now", "should_trigger": true},
+  {"query": "move the attach_ points on the prefab 2cm further out of the alcoves and redeploy", "should_trigger": true},
+  {"query": "the beacon's glow uses a fire flame instead of the wisp light. which torch prefab does the code borrow it from?", "should_trigger": false},
+  {"query": "grausten looks wrong on the pillar, have the plugin dress it with black marble instead", "should_trigger": false},
+  {"query": "rebuild and deploy, i only touched BeaconUI.cs", "should_trigger": false},
+  {"query": "make a 256x256 icon.png for the thunderstore package, something with a blue crystal", "should_trigger": false},
+  {"query": "what material does stone_wall_2x1 use in game? run beacon_prefabs for it", "should_trigger": false},
+  {"query": "trophies in the alcoves are facing into the pillar, flip StandAttachRotation in the display code", "should_trigger": false},
+  {"query": "export the beacon from totem.blend as an OBJ so i can 3d print it", "should_trigger": false},
+  {"query": "install unity 6000.0.75f1 through the unity hub command line", "should_trigger": false},
+  {"query": "why do the trophy visuals get destroyed and rebuilt every second? looks wasteful", "should_trigger": false},
+  {"query": "add a config option so players can hide the trophies in the alcoves", "should_trigger": false}
+]

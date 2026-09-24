@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "unity-mcp": {
+      "command": "${USERPROFILE}/.unity/relay/relay_win.exe",
+      "args": ["--mcp"]
+    },
+    "blender": {
+      "command": "${LOCALAPPDATA}/Microsoft/WinGet/Links/uv.exe",
+      "args": ["run", "--directory", "${USERPROFILE}/.claude/mcp/blender-mcp", "blender-mcp"]
+    }
+  }
+}

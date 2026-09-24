@@ -1,0 +1,22 @@
+[
+  {"query": "i changed the hover text in BeaconController, can you rebuild and put it in the Dev profile so i can check it", "should_trigger": true},
+  {"query": "the drop fix isn't showing up in game, i broke a beacon with an eikthyr trophy in it and the trophy still vanished. did the new dll actually get deployed?", "should_trigger": true},
+  {"query": "ok valheim is closed now, redeploy", "should_trigger": true},
+  {"query": "package a release zip for thunderstore, dont bump anything, i just want to see what ends up in the zip", "should_trigger": true},
+  {"query": "build is failing after my last edit to Patches/RequirementPatches.cs, get it compiling and deployed again", "should_trigger": true},
+  {"query": "try the new trophy placement change in game for me", "should_trigger": true},
+  {"query": "I rebuilt the bundle myself with the assetbundle browser and copied it over BuildBeacon/Assets/buildbeacon. whats next to get it in game?", "should_trigger": true},
+  {"query": "rider says build succeeded but the game still shows the old 20m radius. is the BuildBeacon.dll in the r2modman profile actually the new one?", "should_trigger": true},
+  {"query": "do a release build and tell me where the thunderstore package ended up", "should_trigger": true},
+  {"query": "after pulling, the game logs 'AssetBundle buildbeacon not found in assembly manifest'. get the bundle embedded again and redeploy", "should_trigger": true},
+  {"query": "change the BeaconCrystal emission in unity to a deeper blue, its reading almost white at night", "should_trigger": false},
+  {"query": "my bepinex log has 'Failed to patch ... Cannot get result from void method' - which patch is wrong?", "should_trigger": false},
+  {"query": "commit the csproj change and the new .meta files as separate commits", "should_trigger": false},
+  {"query": "what does MobSlotsPerBoss do in the config and whats a sensible value for a 4 person server", "should_trigger": false},
+  {"query": "write a unit test for DiscountRules.ApplyMobDiscount covering the Flat and Percent cases", "should_trigger": false},
+  {"query": "how does r2modman decide which profile folder a mod lands in? i want a second profile thats vanilla for comparison", "should_trigger": false},
+  {"query": "set up a github actions workflow that builds BuildBeacon.sln on every push", "should_trigger": false},
+  {"query": "make the pillar about 10cm taller in the blender generator script", "should_trigger": false},
+  {"query": "fold docs/handoff/current.md into a new dated handoff file and empty it", "should_trigger": false},
+  {"query": "is Player.OnSpawned still void on valheim 1.0? i want to postfix it", "should_trigger": false}
+]

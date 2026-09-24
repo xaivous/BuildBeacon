@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Beacon</title>
+<meta name="description" content="Build Beacon, a Valheim mod by Xaivous: a craftable beacon that makes building cheaper nearby, powered by the trophies you collect. Includes a discount matrix for every trophy and material.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="site.css">
+<script>try{var t=localStorage.getItem('bb-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap">
+    <div class="head-row">
+      <div class="brand">
+        <h1>Build Beacon</h1>
+        <p class="by">A Valheim mod by Xaivous &middot; <b>v{{VERSION}}</b></p>
+      </div>
+      <div class="head-actions">
+        {{LINKS}}
+        <button type="button" class="btn ghost has-tip" id="theme-toggle" aria-label="Switch between light and dark mode"><span aria-hidden="true">&#9680;</span><span class="tip end" id="theme-tip" role="tooltip">Switch between light and dark mode</span></button>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <a role="tab" id="tab-mod" href="#mod" aria-controls="panel-mod" aria-selected="true">The Mod</a>
+      <a role="tab" id="tab-pieces" href="#pieces" aria-controls="panel-pieces" aria-selected="false" tabindex="-1"><span class="tab-long">Building </span>Pieces</a>
+      <a role="tab" id="tab-matrix" href="#matrix" aria-controls="panel-matrix" aria-selected="false" tabindex="-1"><span class="tab-long">Discount </span>Matrix</a>
+      <a role="tab" id="tab-roadmap" href="#roadmap" aria-controls="panel-roadmap" aria-selected="false" tabindex="-1">Roadmap</a>
+      <a role="tab" id="tab-changelog" href="#changelog" aria-controls="panel-changelog" aria-selected="false" tabindex="-1">Changelog</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="panel-mod" role="tabpanel" aria-labelledby="tab-mod" class="prose">
+{{README}}
+  </section>
+
+  <section id="panel-pieces" role="tabpanel" aria-labelledby="tab-pieces" hidden>
+{{PIECES}}
+  </section>
+
+  <section id="panel-matrix" role="tabpanel" aria-labelledby="tab-matrix" hidden>
+    <div class="mx-intro">
+      <h2>Discount Matrix</h2>
+      <p class="lede">Every trophy in the game against every material the Build Beacon discounts. A number is the <b>discount level</b> that creature trophy gives the material; <b>Free</b> marks the materials a boss trophy covers: free by default, or 95% off on a server that sets <code>BossPercent = 95</code>. A beacon adds up the levels of the trophies in its network, to the top level. Tick the trophies you have to see what your beacon would do, or load your server's rules files to see its matrix instead of the defaults.</p>
+      <div class="facts" id="mx-facts" aria-live="polite"></div>
+      <div class="legend" id="mx-legend" aria-label="Legend"></div>
+    </div>
+
+    <section class="panel" aria-labelledby="owned-title">
+      <div class="panel-head">
+        <h3 id="owned-title">Your trophies</h3>
+        <button type="button" class="btn small" id="owned-clear" hidden>Clear</button>
+      </div>
+      <p class="hint" id="owned-hint">Tick trophies in the table below (the box beside each name) to add them up the way a beacon does.</p>
+      <div class="owned-list" id="owned-list"></div>
+      <div class="results" id="owned-results" aria-live="polite"></div>
+    </section>
+
+    <details class="server" id="server">
+      <summary>Your server's rules</summary>
+      <div class="body">
+        <p class="hint">A server can change what each trophy does. Paste the contents of its <code>BepInEx/config/BuildBeacon.BossRules.txt</code> and <code>BuildBeacon.MobRules.txt</code> (or pick the files), and the matrix and your totals use them. Lines are read the way the mod reads them: <code>Trophy | Material</code> for bosses, <code>Trophy | Material | Level</code> or <code>Trophy | Stackable</code> for creatures, <code>#</code> starts a comment. Level percents and Boss percent are the <code>LevelPercents</code> and <code>BossPercent</code> settings in its <code>BepInEx/config/com.xaivous.buildbeacon.cfg</code>.</p>
+        <div class="rules-grid">
+          <label>Boss rules<textarea id="rules-boss" spellcheck="false" autocomplete="off"></textarea></label>
+          <label>Creature rules<textarea id="rules-mob" spellcheck="false" autocomplete="off"></textarea></label>
+        </div>
+        <div class="inline">
+          <label>Level percents <input type="text" id="rules-levels" spellcheck="false" autocomplete="off"></label>
+          <label>Boss percent <input type="text" id="rules-boss-pct" inputmode="decimal" spellcheck="false" autocomplete="off" size="4"></label>
+          <label class="btn small" for="rules-files">Pick files&hellip;</label>
+          <input type="file" id="rules-files" accept=".txt,text/plain" multiple hidden>
+          <button type="button" class="btn small primary" id="rules-apply">Use these rules</button>
+          <button type="button" class="btn small" id="rules-reset">Back to the defaults</button>
+        </div>
+        <p class="report" id="rules-report" aria-live="polite"></p>
+      </div>
+    </details>
+
+    <div class="controls">
+      <input type="search" class="search" id="mx-search" placeholder="Find a trophy or material" aria-label="Find a trophy or material" autocomplete="off">
+      <select class="biome" id="mx-biome" aria-label="Biome"></select>
+      <label class="toggle"><input type="checkbox" id="mx-only-rules"> Only trophies with rules</label>
+      <label class="toggle"><input type="checkbox" id="mx-balance"> Balance view</label>
+    </div>
+
+    <div class="scroller" id="mx-scroller"></div>
+
+    <section class="notes" id="mx-notes">
+      <p><b>Levels.</b> Levels from different trophies add up in one beacon, up to the top level; each creature trophy counts once unless the rules mark it Stackable. Where beacons overlap, the one that takes the most off counts (the default <code>Stacking = Max</code>). The <b>Max level</b> row at the bottom is the most creature trophies alone can do for each material, with one of every trophy that has a rule for it.</p>
+      <p><b>Rare</b> marks mini-bosses, Hildir's chest bosses, rare spawns and creatures from a single cave or dungeon. <b>&dagger;</b> The biome is placed from the game's names and descriptions rather than spawn data.</p>
+      <p class="balance-only" hidden><b>Balance view.</b> The footer adds the levels as if one of each trophy were slotted in one beacon. Each creature rule gives one level, and no material has more than three trophies. Construction woods and stones (bold 2/3) aim for level 2 from the common creature trophies and 3 with a rare one; powerful materials (metals, cores, crystal, Dvergr parts) stop at level 2; materials only a rare creature drops aim for 1 from its trophy; every other creature-discounted material aims for 1 from common trophies. A dashed outline marks a miss or a level past the cap.</p>
+    </section>
+  </section>
+
+  <section id="panel-roadmap" role="tabpanel" aria-labelledby="tab-roadmap" class="prose" hidden>
+    <h2>Roadmap</h2>
+{{ROADMAP}}
+  </section>
+
+  <section id="panel-changelog" role="tabpanel" aria-labelledby="tab-changelog" class="prose" hidden>
+    <h2>Changelog</h2>
+{{CHANGELOG}}
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap"><p>Build Beacon is MIT licensed. A fan-made mod, not affiliated with Iron Gate or Coffee Stain.</p></div>
+</footer>
+
+<script id="matrix-data" type="application/json">{{MATRIX_DATA}}</script>
+<script src="matrix.js"></script>
+</body>
+</html>

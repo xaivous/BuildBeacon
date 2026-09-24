@@ -1,0 +1,22 @@
+[
+  {"query": "placed a beacon on my wood floor and it broke a few seconds later, nothing in chat", "should_trigger": true},
+  {"query": "[Error  : HarmonyX] Failed to patch void Player::PlacePiece(Piece piece): System.Exception: Cannot get result from void method", "should_trigger": true},
+  {"query": "costs aren't discounted near the beacon anymore. eikthyr trophy is in it and wood still costs full price", "should_trigger": true},
+  {"query": "i want to postfix Piece.DropResources to add a bonus drop - whats its real signature on 1.0", "should_trigger": true},
+  {"query": "can you check the log from my last session, the beacon came out grey and untextured", "should_trigger": true},
+  {"query": "which vanilla material gives a clean marble look? i need the exact name to put in MaterialTemplates", "should_trigger": true},
+  {"query": "the mod didnt load this time, the beacon isnt in the hammer menu at all", "should_trigger": true},
+  {"query": "who calls WearNTear.Destroy? i want to know if collapse goes through it before i hook it", "should_trigger": true},
+  {"query": "removing a beacon refunded 3 wood when i placed it for free next to another beacon, something's off", "should_trigger": true},
+  {"query": "the glow line in the log says 'crystal not found, left at the prefab origin' - what does that mean", "should_trigger": true},
+  {"query": "rebuild, valheim is closed", "should_trigger": false},
+  {"query": "make the runes glow less in unity", "should_trigger": false},
+  {"query": "where do i farm the eikthyr trophy in vanilla, which biome is he in", "should_trigger": false},
+  {"query": "valheim crashes on launch even with no mods in the profile, should i verify files in steam?", "should_trigger": false},
+  {"query": "write a new console command beacon_reset that empties a beacon's trophies", "should_trigger": false},
+  {"query": "jotunn vs plain bepinex for a new mod - which would you start with and why", "should_trigger": false},
+  {"query": "add a config option for how high above the plinth the trophies drop", "should_trigger": false},
+  {"query": "unity's editor log says Duplicate assembly Mono.Cecil.dll, how do i get rid of it", "should_trigger": false},
+  {"query": "mark open item 2 done and commit", "should_trigger": false},
+  {"query": "explain how the paid-cost refund gets stored on the ZDO, i want to understand it before touching it", "should_trigger": false}
+]

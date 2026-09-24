@@ -1,0 +1,10 @@
+{
+  "name": "BuildBeacon",
+  "description": "Boss-trophy-powered beacon that discounts build costs in a radius.",
+  "version_number": "0.1.0",
+  "website_url": "",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2333",
+    "ValheimModding-Jotunn-2.30.2"
+  ]
+}
