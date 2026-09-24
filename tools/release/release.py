@@ -351,8 +351,11 @@ def cmd_bump(args):
     write_like(MANIFEST, manifest_text)
     changelog = read(CHANGELOG)
     if not re.search(rf"^## {re.escape(new)}\s*$", changelog, re.M):
-        changelog = re.sub(r"^(# Changelog\s*\n)", rf"\g<1>\n## {new}\n\n{CHANGELOG_PLACEHOLDER}\n", changelog,
-                           count=1, flags=re.M)
+        # The new entry goes directly above the latest one (or at the end when there is none yet).
+        entry = f"## {new}\n\n{CHANGELOG_PLACEHOLDER}\n\n"
+        first = re.search(r"^## ", changelog, re.M)
+        changelog = (changelog[:first.start()] + entry + changelog[first.start():] if first
+                     else changelog.rstrip("\n") + "\n\n" + entry.rstrip("\n") + "\n")
         write_like(CHANGELOG, changelog)
     print(f"{old} -> {new}: PluginVersion, manifest version_number, and a '## {new}' CHANGELOG entry to fill in")
     return 0
