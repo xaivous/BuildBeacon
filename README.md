@@ -215,9 +215,10 @@ carry over automatically).
 
 The rules live in two readable files in `BepInEx/config`, created with the defaults on first run. Save either file and
 the rules reload in game, no restart needed. On a server, edit the server's copies; players receive them on connect and
-whenever they change.
+whenever they change. Before 0.3.0 they were named without the `xaivous.` prefix; 0.3.0 carries an existing file over
+to the new name and keeps the old one as a backup.
 
-`BuildBeacon.BossRules.txt`, one trophy and one material per line:
+`xaivous.BuildBeacon.BossRules.txt`, one trophy and one material per line:
 
 ```
 # Trophy            | Material
@@ -226,7 +227,7 @@ TrophyTheElder      | Fine Wood
 TrophyBonemass      | Iron
 ```
 
-`BuildBeacon.MobRules.txt`, one trophy, material and level per line, plus a line for each stackable trophy:
+`xaivous.BuildBeacon.MobRules.txt`, one trophy, material and level per line, plus a line for each stackable trophy:
 
 ```
 # Trophy            | Material       | Level

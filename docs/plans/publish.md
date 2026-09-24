@@ -88,7 +88,7 @@ public). Not done yet: the screenshots, the Thunderstore button (`THUNDERSTORE_U
   2. **"My trophies"**: tick the trophies you have (or have slotted), and a results strip shows each material's summed
      level, percent off and multiplier, capped at the top level, the way the beacon adds them (non-stackable counted
      once). Remembered in `localStorage`.
-  3. **Server rules:** paste the contents of your server's `BuildBeacon.BossRules.txt` and `BuildBeacon.MobRules.txt`
+  3. **Server rules:** paste the contents of your server's `xaivous.BuildBeacon.BossRules.txt` and `xaivous.BuildBeacon.MobRules.txt`
      (or pick the files) to see that server's matrix instead of the defaults. The parser follows `RulesFile`: `|`
      separated, `#` comments, `Trophy | Stackable` lines, names matched ignoring case, spaces and underscores.
   4. A "Balance view" toggle keeps today's targets and gaps rows for maintainers.

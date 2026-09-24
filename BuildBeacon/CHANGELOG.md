@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- **The rules files are now `xaivous.BuildBeacon.BossRules.txt` and `xaivous.BuildBeacon.MobRules.txt`** (were
+  `BuildBeacon.BossRules.txt` and `BuildBeacon.MobRules.txt`). A server's own rules carry over automatically the
+  first time 0.3.0 starts; the old files are kept as a backup and can be deleted afterwards.
+- Server and players must all update together, as for any new minor version.
+
 ## 0.2.0
 
 - **The config file is now `BepInEx/config/xaivous.buildbeacon.cfg`** (was `com.xaivous.buildbeacon.cfg`): the mod's ID

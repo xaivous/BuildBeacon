@@ -18,8 +18,11 @@ namespace BuildBeacon
     /// </summary>
     internal sealed class RulesFile
     {
-        public const string BossFileName = "BuildBeacon.BossRules.txt";
-        public const string MobFileName = "BuildBeacon.MobRules.txt";
+        public const string BossFileName = "xaivous.BuildBeacon.BossRules.txt";
+        public const string MobFileName = "xaivous.BuildBeacon.MobRules.txt";
+        /// <summary>The names up to 0.2.x; a file under one of them is carried over once (Init).</summary>
+        private const string OldBossFileName = "BuildBeacon.BossRules.txt";
+        private const string OldMobFileName = "BuildBeacon.MobRules.txt";
 
         private const float ReloadDebounceSeconds = 0.5f;
 
@@ -30,8 +33,8 @@ namespace BuildBeacon
 
         public static void InitAll()
         {
-            Boss = new RulesFile(BossFileName, BuildBeaconPlugin.Cfg.BossRules, NormalizeBossLine, BossHeader, BossExamples);
-            Mob = new RulesFile(MobFileName, BuildBeaconPlugin.Cfg.MobRules, NormalizeMobLine, MobHeader, MobExamples);
+            Boss = new RulesFile(BossFileName, OldBossFileName, BuildBeaconPlugin.Cfg.BossRules, NormalizeBossLine, BossHeader, BossExamples);
+            Mob = new RulesFile(MobFileName, OldMobFileName, BuildBeaconPlugin.Cfg.MobRules, NormalizeMobLine, MobHeader, MobExamples);
             Boss.Init();
             Mob.Init();
         }
@@ -46,6 +49,7 @@ namespace BuildBeacon
         // ---- Instance ----
 
         private readonly string _fileName;
+        private readonly string _oldFileName;
         private readonly ConfigEntry<string> _entry;
         private readonly Func<string, string> _normalizeLine;
         private readonly string[] _header;
@@ -55,9 +59,10 @@ namespace BuildBeacon
         private volatile bool _dirty;
         private float _dirtySince;
 
-        private RulesFile(string fileName, ConfigEntry<string> entry, Func<string, string> normalizeLine, string[] header, string[] examples)
+        private RulesFile(string fileName, string oldFileName, ConfigEntry<string> entry, Func<string, string> normalizeLine, string[] header, string[] examples)
         {
             _fileName = fileName;
+            _oldFileName = oldFileName;
             _entry = entry;
             _normalizeLine = normalizeLine;
             _header = header;
@@ -70,6 +75,13 @@ namespace BuildBeacon
         {
             try
             {
+                // 0.3.0 renamed the files (xaivous. prefix): carry a server's own rules over once, keeping the old file.
+                var oldPath = System.IO.Path.Combine(Paths.ConfigPath, _oldFileName);
+                if (!File.Exists(Path) && File.Exists(oldPath))
+                {
+                    File.Copy(oldPath, Path);
+                    BuildBeaconPlugin.Log.LogInfo($"Rules carried over from {_oldFileName} to {_fileName} (the old file is kept as a backup)");
+                }
                 if (!File.Exists(Path))
                 {
                     File.WriteAllText(Path, DefaultContent());

@@ -1,6 +1,6 @@
 # BuildBeacon default trophy rules
 
-These are the rules BuildBeacon ships with. They are written to `BepInEx/config/BuildBeacon.BossRules.txt` and `BuildBeacon.MobRules.txt` the first time the mod runs; after that, those files are what counts, and a server can change them freely (see the main page). Trophy names in the right-hand column are the names the rules files use.
+These are the rules BuildBeacon ships with. They are written to `BepInEx/config/xaivous.BuildBeacon.BossRules.txt` and `xaivous.BuildBeacon.MobRules.txt` the first time the mod runs; after that, those files are what counts, and a server can change them freely (see the main page). Trophy names in the right-hand column are the names the rules files use.
 
 ## Boss trophies: materials made free (7 bosses, 55 materials)
 

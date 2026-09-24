@@ -21,7 +21,7 @@ namespace BuildBeacon
         /// over once (MigrateConfigFile).</summary>
         private const string OldPluginGuid = "com.xaivous.buildbeacon";
         public const string PluginName = "BuildBeacon";
-        public const string PluginVersion = "0.2.0";
+        public const string PluginVersion = "0.3.0";
         public const string PiecePrefab = "xai_build_beacon";
         public const string BundleName = "buildbeacon";              // embedded resource, built from BuildBeaconUnity/Assets/Beacon
         public const string AssetPrefab = "xai_build_beacon_prefab";  // the asset in the bundle; cloned to PiecePrefab at registration

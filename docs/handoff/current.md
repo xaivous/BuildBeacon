@@ -261,6 +261,10 @@ next handoff (the `handoff` skill), fold this into a new dated file and reset it
   now defaults to false (an existing config file keeps its saved value; the Dev profile's is true), and the manifest's
   `website_url` is `https://xaivous.github.io/BuildBeacon/`: `check --release --online` passes, with one warning
   (BepInExPack 5.4.2351 is out; the manifest has 5.4.2333).
+- Rules files renamed (the user, 0.3.0; 0.2.0 was uploaded and tagged `v0.2.0` on `13c2f65`): `xaivous.BuildBeacon.BossRules.txt` and `xaivous.BuildBeacon.MobRules.txt`
+  (`RulesFile.BossFileName`/`MobFileName`). `RulesFile.Init` copies an old-named file to the new name when the new one
+  does not exist yet, before writing defaults (log "Rules carried over from ..."); the old file stays as a backup.
+  README, site hint, DEFAULT_DISCOUNTS (gen_defaults.py), the publish plan and the 0.2.0 changelog follow.
 - Quieter log (the user): new local setting `VerboseLogging` (5. Dev, off) and `BuildBeaconPlugin.Verbose(...)`. Behind it:
   the piece registration details (materials, glow, effects, ring, snap points, each piece), each trophy's display fit,
   the savings-rounding and Hugin lines, and every `[diag]` line (placement push, placed-piece plan, slow inventory

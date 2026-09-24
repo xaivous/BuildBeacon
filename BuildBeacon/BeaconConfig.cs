@@ -38,11 +38,11 @@ namespace BuildBeacon
         public ConfigEntry<int> BeaconMobSlots;
 
         // Boss rules: trophyPrefab|material, one per line. A slotted boss trophy takes BossPercent off that material
-        // (100: free) within the radius. Mirrors BuildBeacon.BossRules.txt.
+        // (100: free) within the radius. Mirrors xaivous.BuildBeacon.BossRules.txt.
         public ConfigEntry<string> BossRules;
 
         // Mob (creature) rules: trophyPrefab|material|level, one per line, and trophyPrefab|Stackable. Levels add up
-        // across a beacon's trophies and map to a percentage (LevelPercents). Mirrors BuildBeacon.MobRules.txt.
+        // across a beacon's trophies and map to a percentage (LevelPercents). Mirrors xaivous.BuildBeacon.MobRules.txt.
         public ConfigEntry<string> MobRules;
 
         // Generated from ingredient_trophy_map.csv: every build ingredient mapped to the boss whose biome it belongs to.
