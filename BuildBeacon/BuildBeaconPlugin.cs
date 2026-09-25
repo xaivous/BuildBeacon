@@ -44,6 +44,11 @@ namespace BuildBeacon
         };
         /// <summary>The holder and rack prefabs' extensions, so a changed HolderRange reaches pieces placed from now on.</summary>
         private static readonly List<StationExtension> HolderExtensions = new List<StationExtension>();
+        /// <summary>Both beacons' crafting stations (prefabs), whose build range follows HolderRange.</summary>
+        private static readonly List<CraftingStation> BeaconStations = new List<CraftingStation>();
+        /// <summary>How close a player comes to a beacon to know it, which lists the holders and racks in the build menu
+        /// (vanilla's workbench is 4 m; a beacon is taller, and this covers standing back after placing one).</summary>
+        private const float BeaconDiscoverRange = 8f;
         private static float s_appliedHolderRange = -1f;
         public const string CrystalMaterial = "BeaconCrystal";       // the glow effect is centered on the mesh using this material
         public const string CrystalPivot = "crystal";                // the prefab child holding the crystal model; the glow goes under it and it moves while lit
@@ -227,6 +232,18 @@ namespace BuildBeacon
             Log.LogInfo($"Registered {s_registered.Count} building pieces: " + string.Join(", ", s_registered.Select(PieceName)) +
                         (Cfg.VerboseLogging.Value ? "" : " (VerboseLogging shows the details)"));
             PrefabManager.OnVanillaPrefabsAvailable -= RegisterPiece;
+        }
+
+        /// <summary>
+        /// A holder or rack as a beacon extension in the build menu: the beacon's station as its crafting station (listed
+        /// once the player knows a beacon, built within its range), and m_isUpgrade, which only draws the vanilla
+        /// upgrade arrow on its icon (Hud.UpdatePieceList, BuildUiPieceButton.Setup), as for the workbench's extensions.
+        /// </summary>
+        private static void MarkAsBeaconExtension(Piece piece, CraftingStation station)
+        {
+            if (piece == null) return;
+            piece.m_craftingStation = station;
+            piece.m_isUpgrade = true;
         }
 
         /// <summary>A registered piece's English name ("Great Beacon"), or its prefab name.</summary>
@@ -722,10 +739,12 @@ namespace BuildBeacon
         }
 
         /// <summary>
-        /// Make the beacon a vanilla crafting station so the boss holders can be its extensions (placement range, the
-        /// yellow connection thread, closest-station linking). Nothing is crafted here: no recipes name this station,
-        /// no roof or fire rule, no build range, and a discover range of 0 so players never get a "new station"
-        /// unlock message (Player.AddKnownStation queues one). Added after BeaconController on purpose: Player picks the
+        /// Make the beacon a vanilla crafting station so the boss holders and trophy racks can be its extensions
+        /// (placement range, the yellow connection thread, closest-station linking), and their crafting station: vanilla
+        /// lists a piece in the build menu only once the player knows its station (walked within the discover range;
+        /// Player.AddKnownStation shows "new station", then its levels as extensions are added), and builds it only
+        /// standing within the build range, which follows HolderRange (ApplyHolderRange). Nothing is crafted here: no
+        /// recipes name this station, no roof or fire rule. Added after BeaconController on purpose: Player picks the
         /// first Interactable/Hoverable on the object, so the beacon panel, not the crafting window, opens on use.
         /// </summary>
         private static void AddBeaconStation(GameObject prefab, Sprite icon, float connectionHeight = 1.4f)
@@ -733,8 +752,9 @@ namespace BuildBeacon
             var station = prefab.GetComponent<CraftingStation>() ?? prefab.AddComponent<CraftingStation>();
             station.m_name = "$piece_xai_beacon";
             station.m_icon = icon;
-            station.m_discoverRange = 0f;
-            station.m_rangeBuild = 0f;
+            station.m_discoverRange = BeaconDiscoverRange;
+            station.m_rangeBuild = Cfg.HolderRange.Value;
+            BeaconStations.Add(station);
             station.m_extraRangePerLevel = 0f;
             station.m_craftRequireRoof = false;
             station.m_craftRequireFire = false;
@@ -785,7 +805,8 @@ namespace BuildBeacon
                     PieceTable = PieceTables.Hammer,
                     Category = PieceCategories.Misc,
                     Usage = new[] { PieceUsages.Misc, PieceUsages.Crafting },
-                    CraftingStation = CraftingStations.Workbench,
+                    // No CraftingStation here: the beacon's station is set on the prefab below, so the piece shows in
+                    // the build menu only once the player knows a beacon, and is built within its range.
                     Requirements = new[]
                     {
                         new RequirementConfig("Stone", 10, 0, true),
@@ -820,6 +841,7 @@ namespace BuildBeacon
                 }
 
                 var root = piece.PiecePrefab;
+                MarkAsBeaconExtension(root.GetComponent<Piece>(), station);
                 root.AddComponent<BossHolder>();
                 var ext = root.AddComponent<StationExtension>();
                 ext.m_craftingStation = station;
@@ -849,6 +871,13 @@ namespace BuildBeacon
             if (HolderExtensions.Count == 0 || Mathf.Approximately(range, s_appliedHolderRange)) return;
             foreach (var ext in HolderExtensions)
                 if (ext != null) ext.m_maxStationDistance = range;
+            foreach (var s in BeaconStations)
+                if (s != null) s.m_rangeBuild = range;
+            foreach (var b in BeaconRegistry.All)
+            {
+                var s = b != null ? b.GetComponent<CraftingStation>() : null;
+                if (s != null) s.m_rangeBuild = range;
+            }
             BossHolder.ApplyRange();
             MobRack.ApplyRange();
             s_appliedHolderRange = range;
@@ -889,7 +918,8 @@ namespace BuildBeacon
                     PieceTable = PieceTables.Hammer,
                     Category = PieceCategories.Misc,
                     Usage = new[] { PieceUsages.Misc, PieceUsages.Crafting },
-                    CraftingStation = CraftingStations.Workbench,
+                    // No CraftingStation here: the beacon's station is set on the prefab below, so the piece shows in
+                    // the build menu only once the player knows a beacon, and is built within its range.
                     Icon = LoadIcon(bundle, r.icon),
                     Requirements = new[]
                     {
@@ -925,7 +955,9 @@ namespace BuildBeacon
                 ext.m_connectionOffset = new Vector3(0f, 1f, 0f);
                 ext.m_stack = true;
                 ext.m_continousConnection = false;
-                PieceManager.Instance.AddPiece(new CustomPiece(prefab, true, cfg));
+                var rackPiece = new CustomPiece(prefab, true, cfg);
+                MarkAsBeaconExtension(rackPiece.PiecePrefab.GetComponent<Piece>(), station);
+                PieceManager.Instance.AddPiece(rackPiece);
                 s_registered.Add(prefab);
                 Verbose($"Trophy rack {r.id} registered from {r.asset}: " +
                             $"{prefab.GetComponentsInChildren<Transform>(true).Count(t => t.CompareTag("snappoint"))} snap points, " +

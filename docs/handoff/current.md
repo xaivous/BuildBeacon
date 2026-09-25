@@ -261,6 +261,22 @@ next handoff (the `handoff` skill), fold this into a new dated file and reset it
   now defaults to false (an existing config file keeps its saved value; the Dev profile's is true), and the manifest's
   `website_url` is `https://xaivous.github.io/BuildBeacon/`: `check --release --online` passes, with one warning
   (BepInExPack 5.4.2351 is out; the manifest has 5.4.2333).
+- Upgrade arrow (the user, 0.3.0): holders and racks set `Piece.m_isUpgrade`, which only switches on the build menu
+  icon's arrow (`Hud.UpdatePieceList` -> `PieceIconData.m_upgrade`, and `BuildUiPieceButton.Setup`; nothing else reads
+  it, per sigdump). Set with the beacon station in `MarkAsBeaconExtension`.
+- Hugin (the user, 0.3.0): `TutorialPatches.Player_AddKnownStation` shows the beacon tutorial when the local player
+  first knows a beacon's station (prefix records whether `m_knownStations` already had it; AddKnownStation also runs
+  on station level-ups, which do not count), so walking within 8 m of anyone's beacon triggers it. The placement
+  trigger (`Piece_SetCreator`) stays for a player who met a beacon but never talked to Hugin; `HaveSeenTutorial`
+  stops repeats. Signature checked with sigdump.
+- Extensions gated on a beacon (the user, 0.3.0): the holders' and racks' `Piece.m_craftingStation` is the beacon's
+  station (set on the prefab after the CustomPiece exists; their PieceConfig has no CraftingStation), not the
+  Workbench. Vanilla lists a piece only once its station is known (`Player.HaveRequirements` IsKnown/CanAlmostBuild:
+  `m_knownStations` has the station's name; sigdump) and builds it only with the player inside the station's build
+  range. So `AddBeaconStation` sets `m_discoverRange` 8 m (was 0) and `m_rangeBuild` = HolderRange (was 0), and
+  `ApplyHolderRange` keeps both prefabs' and placed beacons' build range in step. Both beacons share the station name,
+  so either unlocks them. Side effect, vanilla-like: "new station" and "station level N" unlock messages
+  (`Player.AddKnownStation`). README steps 2 and 5, the site's Pieces tab, the 0.3.0 changelog follow.
 - Rules files renamed (the user, 0.3.0; 0.2.0 was uploaded and tagged `v0.2.0` on `13c2f65`): `xaivous.BuildBeacon.BossRules.txt` and `xaivous.BuildBeacon.MobRules.txt`
   (`RulesFile.BossFileName`/`MobFileName`). `RulesFile.Init` copies an old-named file to the new name when the new one
   does not exist yet, before writing defaults (log "Rules carried over from ..."); the old file stays as a backup.

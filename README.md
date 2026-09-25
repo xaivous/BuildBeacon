@@ -23,7 +23,8 @@ player need the mod (see [Multiplayer](#multiplayer)).
 
 1. **Build a Build Beacon.** Hammer, *Misc* tab. It needs a workbench nearby and costs **20 Stone and 1 Surtling
    Core**. While you hold a hammer, hoe or cultivator, a blue ring on the ground shows its radius: **30 metres** to start.
-2. **Build boss trophy holders near it.** Also in the Hammer's *Misc* tab, near a workbench, each costing
+2. **Build boss trophy holders near it.** They join the Hammer's *Misc* tab once you have stood near a beacon, and are
+   built within 30 metres of one, each costing
    **10 Stone and 5 Wood**:
    - the **Boss Trophy Pillar**, a short stone pillar with an iron hook, for floors and the ground;
    - the **Boss Trophy Mount**, a hexagonal plaque with a hook, for walls only.
@@ -34,7 +35,8 @@ player need the mod (see [Multiplayer](#multiplayer)).
    The boss's materials are now free inside the beacon's radius (95% off, if the server chooses).
 4. **Slot creature trophies into the beacon itself.** Press Use on the beacon to open its panel, or hold a trophy and
    press Use on the beacon. Each creature trophy discounts a few of its own materials.
-5. **Add trophy racks for more creature trophies.** Also in the Hammer's *Misc* tab, near a workbench, each costing
+5. **Add trophy racks for more creature trophies.** Also in the Hammer's *Misc* tab once you know a beacon, built
+   within 30 metres of one, each costing
    **10 Wood and 5 Stone**:
    - the **Trophy Column**, a 2 m column with four alcoves round it, for floors and the ground;
    - the **Trophy Panel**, a 2 m square wall panel with four alcoves, made to tile a wall edge to edge.

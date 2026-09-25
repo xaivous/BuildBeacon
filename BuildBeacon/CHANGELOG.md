@@ -5,6 +5,12 @@
 - **The rules files are now `xaivous.BuildBeacon.BossRules.txt` and `xaivous.BuildBeacon.MobRules.txt`** (were
   `BuildBeacon.BossRules.txt` and `BuildBeacon.MobRules.txt`). A server's own rules carry over automatically the
   first time 0.3.0 starts; the old files are kept as a backup and can be deleted afterwards.
+- **Boss trophy holders and trophy racks join the build menu once you have been near a Build Beacon or Great Beacon**
+  (within 8 metres), and are built within 30 metres of one, instead of needing a workbench. Beacons now show the
+  vanilla "new station" message the first time, and their levels as you add holders and racks, as a workbench does.
+  In the build menu their icons carry the vanilla upgrade arrow, like the workbench's extensions.
+- Hugin now explains the beacon the first time you come near one, yours or another player's, not only when you build
+  one.
 - Server and players must all update together, as for any new minor version.
 
 ## 0.2.0

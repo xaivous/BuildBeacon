@@ -15,6 +15,10 @@ E = html.escape
 ITEM_NAMES = {"Stone": "Stone", "Wood": "Wood", "SurtlingCore": "Surtling Core", "Grausten": "Grausten",
               "Crystal": "Crystal"}
 
+# The holders and racks are the beacons' extensions: listed in the build menu once the player has been near a beacon
+# (either kind), and built within HolderRange of one.
+BEACON_STATION = "beacon (listed once you have been near one; build within 30 m of it)"
+
 GROUPS = [
     {
         "title": "Beacons",
@@ -76,7 +80,7 @@ GROUPS = [
                 "kind": "Boss holder",
                 "icon": "xai_bossholder_pillar_icon_128.png",
                 "summary": "A short stone pillar with an iron hook, for floors and the ground.",
-                "station": "Workbench",
+                "station": BEACON_STATION,
                 "cost": [("Stone", 10), ("Wood", 5)],
                 "facts": [
                     ("Holds", "1 boss trophy, on its hook"),
@@ -94,7 +98,7 @@ GROUPS = [
                 "kind": "Boss holder",
                 "icon": "xai_bossholder_wall_icon_128.png",
                 "summary": "A hexagonal stone plaque with a hook, for walls only.",
-                "station": "Workbench",
+                "station": BEACON_STATION,
                 "cost": [("Stone", 10), ("Wood", 5)],
                 "facts": [
                     ("Holds", "1 boss trophy, on its hook"),
@@ -119,7 +123,7 @@ GROUPS = [
                 "kind": "Creature rack",
                 "icon": "xai_mobrack_column_icon_128.png",
                 "summary": "A 2-metre carved column with four alcoves round it, for floors and the ground.",
-                "station": "Workbench",
+                "station": BEACON_STATION,
                 "cost": [("Wood", 10), ("Stone", 5)],
                 "facts": [
                     ("Holds", "4 creature trophies"),
@@ -139,7 +143,7 @@ GROUPS = [
                 "kind": "Creature rack",
                 "icon": "xai_mobrack_wall_icon_128.png",
                 "summary": "A 2-metre square stone panel with four alcoves, for walls.",
-                "station": "Workbench",
+                "station": BEACON_STATION,
                 "cost": [("Wood", 10), ("Stone", 5)],
                 "facts": [
                     ("Holds", "4 creature trophies"),
